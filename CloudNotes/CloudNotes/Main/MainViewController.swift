@@ -9,7 +9,7 @@ import UIKit
 class MainViewController: UIViewController {
     // MARK: - UI Properties
     private lazy var memoListTableView: UITableView = {
-        let tableView = UITableView()
+        let tableView = UITableView(frame: UIScreen.main.bounds, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.dataSource = self
         tableView.delegate = self
@@ -20,9 +20,10 @@ class MainViewController: UIViewController {
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
     }()
+    let memoListTableHeader = MemoTableHeader()
     
     // MARK: - data property
-    private var sampleMemoData: [Memo]? = nil
+    var sampleMemoData: [Memo]? = nil
     
     // MARK: - UI Constraints
     private var commonConstraints: [NSLayoutConstraint] = []
@@ -82,7 +83,7 @@ class MainViewController: UIViewController {
         ])
         
         regularConstraints.append(contentsOf: [
-            memoListTableView.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.3),
+            memoListTableView.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.4),
             memoDetailTextView.topAnchor.constraint(equalTo: self.view.topAnchor),
             memoDetailTextView.leadingAnchor.constraint(equalTo: memoListTableView.trailingAnchor),
             memoDetailTextView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
