@@ -23,6 +23,7 @@ extension Memo {
     var dateTimeToString: String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy. MM. dd"
+        dateFormatter.locale = Locale(identifier: "ko")
         let date = Date(timeIntervalSince1970: lastModified)
         return dateFormatter.string(from: date)
     }
