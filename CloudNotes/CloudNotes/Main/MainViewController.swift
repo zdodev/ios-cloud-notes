@@ -38,18 +38,13 @@ class MainViewController: UIViewController {
         if traitCollection.horizontalSizeClass == .compact && traitCollection.verticalSizeClass == .regular {
             NSLayoutConstraint.deactivate(regularConstraints)
             NSLayoutConstraint.activate(compactConstraints)
-            redView.isHidden = true
+            memoDetailTextView.isHidden = true
         } else {
             NSLayoutConstraint.deactivate(compactConstraints)
             NSLayoutConstraint.activate(regularConstraints)
-            redView.isHidden = false
+            memoDetailTextView.isHidden = false
         }
     }
-    
-    // MARK: - UI Constraints
-    private var commonConstraints: [NSLayoutConstraint] = []
-    private var compactConstraints: [NSLayoutConstraint] = []
-    private var regularConstraints: [NSLayoutConstraint] = []
 
     private func setupUI() {
         self.view.addSubview(memoListTableView)
@@ -58,21 +53,21 @@ class MainViewController: UIViewController {
     
     private func setupConstraints() {
         commonConstraints.append(contentsOf: [
-            blueView.topAnchor.constraint(equalTo: self.view.topAnchor),
-            blueView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            blueView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+            memoListTableView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            memoListTableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            memoListTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ])
         
         compactConstraints.append(contentsOf: [
-            blueView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
+            memoListTableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
         ])
         
         regularConstraints.append(contentsOf: [
-            blueView.widthAnchor.constraint(equalToConstant: 200),
-            redView.topAnchor.constraint(equalTo: self.view.topAnchor),
-            redView.leadingAnchor.constraint(equalTo: blueView.trailingAnchor),
-            redView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            redView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
+            memoListTableView.widthAnchor.constraint(equalToConstant: 200),
+            memoDetailTextView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            memoDetailTextView.leadingAnchor.constraint(equalTo: memoListTableView.trailingAnchor),
+            memoDetailTextView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            memoDetailTextView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
         ])
     }
 }
