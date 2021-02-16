@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+struct Memo: Decodable {
+    let title: String
+    let body: String
+    let last_modified: TimeInterval
+}

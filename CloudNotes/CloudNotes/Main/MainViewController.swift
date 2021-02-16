@@ -29,6 +29,7 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        initMemoSampleData()
         setupUI()
         setupConstraints()
         traitCollectionDidChange(UIScreen.main.traitCollection)
@@ -45,6 +46,14 @@ class MainViewController: UIViewController {
             NSLayoutConstraint.deactivate(compactConstraints)
             NSLayoutConstraint.activate(regularConstraints)
             memoDetailTextView.isHidden = false
+        }
+    }
+    
+    // MARK: - init data
+    private func initMemoSampleData() throws {
+        let jsonDecoder = JSONDecoder()
+        guard let memoJsonData: NSDataAsset = NSDataAsset(name: "sample") else {
+            throw MemoError.decodeData
         }
     }
 
