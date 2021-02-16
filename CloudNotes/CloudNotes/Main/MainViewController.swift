@@ -20,6 +20,7 @@ class MainViewController: UIViewController {
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
     }()
+    private var statusBarView: UIView?
     let memoListTableHeader = MemoTableHeader()
     
     // MARK: - data property
@@ -45,30 +46,13 @@ class MainViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if #available(iOS 13.0, *) {
-            let window = UIApplication.shared.windows.first { $0.isKeyWindow }
-            let statusBarManager = window?.windowScene?.statusBarManager
-            let statusBarView = UIView(frame: statusBarManager?.statusBarFrame ?? CGRect.zero)
-            statusBarView.backgroundColor = .systemGroupedBackground
-            window?.addSubview(statusBarView)
-        } else {
-            let statusBarView = UIApplication.shared.value(forKey: "statusBar") as? UIView
-            statusBarView?.backgroundColor = .systemGroupedBackground
-        }
+        setupStatusBar()
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        NSLayoutConstraint.activate(commonConstraints)
-        if traitCollection.horizontalSizeClass == .compact && traitCollection.verticalSizeClass == .regular {
-            NSLayoutConstraint.deactivate(regularConstraints)
-            NSLayoutConstraint.activate(compactConstraints)
-            memoDetailTextView.isHidden = true
-        } else {
-            NSLayoutConstraint.deactivate(compactConstraints)
-            NSLayoutConstraint.activate(regularConstraints)
-            memoDetailTextView.isHidden = false
-        }
+        
+        setupLayout(with: previousTraitCollection)
     }
     
     // MARK: - init data
@@ -104,5 +88,36 @@ class MainViewController: UIViewController {
             memoDetailTextView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
             memoDetailTextView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
         ])
+    }
+    
+    private func setupStatusBar() {
+        if #available(iOS 13.0, *) {
+            let window = UIApplication.shared.windows.first { $0.isKeyWindow }
+            let statusBarManager = window?.windowScene?.statusBarManager
+            statusBarView = UIView(frame: statusBarManager?.statusBarFrame ?? CGRect.zero)
+            statusBarView?.backgroundColor = .systemGroupedBackground
+            guard let statusBarView = self.statusBarView else {
+                return
+            }
+            window?.addSubview(statusBarView)
+        } else {
+            let statusBarView = UIApplication.shared.value(forKey: "statusBar") as? UIView
+            statusBarView?.backgroundColor = .systemGroupedBackground
+        }
+    }
+    
+    private func setupLayout(with previousTraitCollection: UITraitCollection?) {
+        NSLayoutConstraint.activate(commonConstraints)
+        if traitCollection.horizontalSizeClass == .compact && traitCollection.verticalSizeClass == .regular {
+            NSLayoutConstraint.deactivate(regularConstraints)
+            NSLayoutConstraint.activate(compactConstraints)
+            memoDetailTextView.isHidden = true
+            statusBarView?.isHidden = false
+        } else {
+            NSLayoutConstraint.deactivate(compactConstraints)
+            NSLayoutConstraint.activate(regularConstraints)
+            memoDetailTextView.isHidden = false
+            statusBarView?.isHidden = true
+        }
     }
 }
