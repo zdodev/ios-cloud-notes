@@ -21,6 +21,7 @@ class MainViewController: UIViewController {
         return textView
     }()
     private let regularTableViewWidth: CGFloat = 300
+    private var sampleMemoData: [Memo]? = nil
     
     // MARK: - UI Constraints
     private var commonConstraints: [NSLayoutConstraint] = []
@@ -29,7 +30,11 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        initMemoSampleData()
+        do {
+            try initMemoSampleData()
+        } catch {
+            self.showError(error, okHandler: nil)
+        }
         setupUI()
         setupConstraints()
         traitCollectionDidChange(UIScreen.main.traitCollection)
@@ -55,6 +60,7 @@ class MainViewController: UIViewController {
         guard let memoJsonData: NSDataAsset = NSDataAsset(name: "sample") else {
             throw MemoError.decodeData
         }
+        self.sampleMemoData = try jsonDecoder.decode([Memo].self, from: memoJsonData.data)
     }
 
     // MARK: - setup Method
