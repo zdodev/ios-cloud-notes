@@ -30,6 +30,7 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupConstraints()
+        traitCollectionDidChange(UIScreen.main.traitCollection)
     }
     
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -46,6 +47,7 @@ class MainViewController: UIViewController {
         }
     }
 
+    // MARK: - setup Method
     private func setupUI() {
         self.view.addSubview(memoListTableView)
         self.view.addSubview(memoDetailTextView)
