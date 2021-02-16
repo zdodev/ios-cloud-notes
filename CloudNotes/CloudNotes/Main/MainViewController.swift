@@ -42,6 +42,21 @@ class MainViewController: UIViewController {
         traitCollectionDidChange(UIScreen.main.traitCollection)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if #available(iOS 13.0, *) {
+            let window = UIApplication.shared.windows.first { $0.isKeyWindow }
+            let statusBarManager = window?.windowScene?.statusBarManager
+            let statusBarView = UIView(frame: statusBarManager?.statusBarFrame ?? CGRect.zero)
+            statusBarView.backgroundColor = .systemGroupedBackground
+            window?.addSubview(statusBarView)
+        } else {
+            let statusBarView = UIApplication.shared.value(forKey: "statusBar") as? UIView
+            statusBarView?.backgroundColor = .systemGroupedBackground
+        }
+    }
+    
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         NSLayoutConstraint.activate(commonConstraints)
@@ -73,7 +88,7 @@ class MainViewController: UIViewController {
     
     private func setupConstraints() {
         commonConstraints.append(contentsOf: [
-            memoListTableView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            memoListTableView.topAnchor.constraint(equalTo: self.view.layoutMarginsGuide.topAnchor),
             memoListTableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             memoListTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
         ])
@@ -91,4 +106,3 @@ class MainViewController: UIViewController {
         ])
     }
 }
-
