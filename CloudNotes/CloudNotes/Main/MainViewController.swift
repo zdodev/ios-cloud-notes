@@ -20,6 +20,7 @@ class MainViewController: UIViewController {
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
     }()
+    private let regularTableViewWidth: CGFloat = 300
     
     // MARK: - UI Constraints
     private var commonConstraints: [NSLayoutConstraint] = []
@@ -65,7 +66,7 @@ class MainViewController: UIViewController {
         ])
         
         regularConstraints.append(contentsOf: [
-            memoListTableView.widthAnchor.constraint(equalToConstant: 200),
+            memoListTableView.widthAnchor.constraint(equalToConstant: regularTableViewWidth),
             memoDetailTextView.topAnchor.constraint(equalTo: self.view.topAnchor),
             memoDetailTextView.leadingAnchor.constraint(equalTo: memoListTableView.trailingAnchor),
             memoDetailTextView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
