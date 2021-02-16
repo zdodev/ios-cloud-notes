@@ -11,6 +11,7 @@ class MainViewController: UIViewController {
     private lazy var memoListTableView: UITableView = {
         let tableView = UITableView(frame: UIScreen.main.bounds, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.backgroundColor = .systemGroupedBackground
         tableView.dataSource = self
         tableView.delegate = self
         return tableView
@@ -41,6 +42,7 @@ class MainViewController: UIViewController {
         setupUI()
         setupConstraints()
         traitCollectionDidChange(UIScreen.main.traitCollection)
+        setupTable()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -119,5 +121,11 @@ class MainViewController: UIViewController {
             memoDetailTextView.isHidden = false
             statusBarView?.isHidden = true
         }
+    }
+    
+    private func setupTable() {
+        memoListTableView.rowHeight = UITableView.automaticDimension
+        memoListTableView.estimatedRowHeight = 70
+        memoListTableView.register(MemoTableViewCell.self, forCellReuseIdentifier: "memoCell")
     }
 }
