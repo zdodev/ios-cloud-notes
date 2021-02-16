@@ -11,6 +11,8 @@ class MainViewController: UIViewController {
     private lazy var memoListTableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.dataSource = self
+        tableView.delegate = self
         return tableView
     }()
     private lazy var memoDetailTextView: UITextView = {
@@ -18,6 +20,11 @@ class MainViewController: UIViewController {
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
     }()
+    
+    // MARK: - UI Constraints
+    private var commonConstraints: [NSLayoutConstraint] = []
+    private var compactConstraints: [NSLayoutConstraint] = []
+    private var regularConstraints: [NSLayoutConstraint] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
