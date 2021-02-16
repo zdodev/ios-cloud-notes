@@ -18,3 +18,12 @@ struct Memo: Decodable {
         case lastModified = "last_modified"
     }
 }
+
+extension Memo {
+    var dateTimeToString: String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy. MM. dd"
+        let date = Date(timeIntervalSince1970: lastModified)
+        return dateFormatter.string(from: date)
+    }
+}

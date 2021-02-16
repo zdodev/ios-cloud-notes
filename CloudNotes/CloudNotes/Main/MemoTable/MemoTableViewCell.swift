@@ -85,7 +85,7 @@ class MemoTableViewCell: UITableViewCell {
     // MARK: - display cell method
     func displayUI(with item: Memo) {
         titleLabel.text = item.title
-        dateLabel.text = String(item.lastModified)
+        dateLabel.text = item.dateTimeToString
         bodyLabel.text = item.body
     }
 }
