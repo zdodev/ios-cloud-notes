@@ -6,7 +6,6 @@
 
 import UIKit
 
-// TODO: textview content tracking URL, phone, date
 class MainViewController: UIViewController {
     // MARK: - UI Properties
     private lazy var memoListTableView: UITableView = {
@@ -41,12 +40,11 @@ class MainViewController: UIViewController {
         } catch {
             self.showError(error, okHandler: nil)
         }
-        setupUI()
-        setupConstraints()
-        traitCollectionDidChange(UIScreen.main.traitCollection)
         setupTable()
         setupTextView()
         setupKeyboard()
+        setupConstraints()
+        traitCollectionDidChange(UIScreen.main.traitCollection)
         memoDetailTextviewChange(to: 0)
     }
     
@@ -56,10 +54,29 @@ class MainViewController: UIViewController {
         setupStatusBar()
     }
     
+    // MARK: - handle traitCollection
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
         setupLayout(with: previousTraitCollection)
+    }
+    
+    private func setupLayout(with previousTraitCollection: UITraitCollection?) {
+        NSLayoutConstraint.activate(commonConstraints)
+        if statusBarView?.frame == CGRect.zero {
+            setupStatusBar()
+        }
+        if traitCollection.horizontalSizeClass == .compact && traitCollection.verticalSizeClass == .regular {
+            memoDetailTextView.isHidden = true
+            statusBarView?.isHidden = false
+            NSLayoutConstraint.deactivate(regularConstraints)
+            NSLayoutConstraint.activate(compactConstraints)
+        } else {
+            memoDetailTextView.isHidden = false
+            statusBarView?.isHidden = true
+            NSLayoutConstraint.deactivate(compactConstraints)
+            NSLayoutConstraint.activate(regularConstraints)
+        }
     }
     
     // MARK: - init data
@@ -72,9 +89,43 @@ class MainViewController: UIViewController {
     }
 
     // MARK: - setup Method
-    private func setupUI() {
+    private func setupTable() {
         self.view.addSubview(memoListTableView)
+        memoListTableView.rowHeight = UITableView.automaticDimension
+        memoListTableView.estimatedRowHeight = 70
+        memoListTableView.register(MemoTableViewCell.self, forCellReuseIdentifier: "memoCell")
+    }
+    
+    private func setupTextView() {
         self.view.addSubview(memoDetailTextView)
+        memoDetailTextView.delegate = self
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapTextView(_:)))
+        memoDetailTextView.addGestureRecognizer(tapGesture)
+        setTextViewAllDataDetectorTypes()
+    }
+    
+    @objc private func tapTextView(_ gesture: UITapGestureRecognizer) {
+        memoDetailTextView.isEditable = true
+        memoDetailTextView.dataDetectorTypes = []
+        memoDetailTextView.becomeFirstResponder()
+    }
+    
+    private func setTextViewAllDataDetectorTypes() {
+        memoDetailTextView.isEditable = false
+        memoDetailTextView.dataDetectorTypes = [.all]
+    }
+    
+    private func setupKeyboard() {
+        let keyboardToolbar = UIToolbar()
+        keyboardToolbar.sizeToFit()
+        let doneButton = UIBarButtonItem(title: "완료", style: .done, target: self, action: #selector(touchUpDoneButton(_:)))
+        keyboardToolbar.items = [doneButton]
+        
+        memoDetailTextView.inputAccessoryView = keyboardToolbar
+    }
+    
+    @objc func touchUpDoneButton(_ sender: Any) {
+        self.view.endEditing(true)
     }
     
     private func setupConstraints() {
@@ -115,61 +166,6 @@ class MainViewController: UIViewController {
             let statusBarView = UIApplication.shared.value(forKey: "statusBar") as? UIView
             statusBarView?.backgroundColor = .systemGroupedBackground
         }
-    }
-    
-    private func setupLayout(with previousTraitCollection: UITraitCollection?) {
-        NSLayoutConstraint.activate(commonConstraints)
-        if statusBarView?.frame == CGRect.zero {
-            setupStatusBar()
-        }
-        if traitCollection.horizontalSizeClass == .compact && traitCollection.verticalSizeClass == .regular {
-            memoDetailTextView.isHidden = true
-            statusBarView?.isHidden = false
-            NSLayoutConstraint.deactivate(regularConstraints)
-            NSLayoutConstraint.activate(compactConstraints)
-        } else {
-            memoDetailTextView.isHidden = false
-            statusBarView?.isHidden = true
-            NSLayoutConstraint.deactivate(compactConstraints)
-            NSLayoutConstraint.activate(regularConstraints)
-        }
-    }
-    
-    private func setupTable() {
-        memoListTableView.rowHeight = UITableView.automaticDimension
-        memoListTableView.estimatedRowHeight = 70
-        memoListTableView.register(MemoTableViewCell.self, forCellReuseIdentifier: "memoCell")
-    }
-    
-    private func setupTextView() {
-        memoDetailTextView.delegate = self
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapTextView(_:)))
-        memoDetailTextView.addGestureRecognizer(tapGesture)
-        setTextViewAllDataDetectorTypes()
-    }
-    
-    @objc private func tapTextView(_ gesture: UITapGestureRecognizer) {
-        memoDetailTextView.isEditable = true
-        memoDetailTextView.dataDetectorTypes = []
-        memoDetailTextView.becomeFirstResponder()
-    }
-    
-    private func setTextViewAllDataDetectorTypes() {
-        memoDetailTextView.isEditable = false
-        memoDetailTextView.dataDetectorTypes = [.all]
-    }
-    
-    private func setupKeyboard() {
-        let keyboardToolbar = UIToolbar()
-        keyboardToolbar.sizeToFit()
-        let doneButton = UIBarButtonItem(title: "완료", style: .done, target: self, action: #selector(touchUpDoneButton(_:)))
-        keyboardToolbar.items = [doneButton]
-        
-        memoDetailTextView.inputAccessoryView = keyboardToolbar
-    }
-    
-    @objc func touchUpDoneButton(_ sender: Any) {
-        self.view.endEditing(true)
     }
     
     //MARK: - memoDetailTextView Method
