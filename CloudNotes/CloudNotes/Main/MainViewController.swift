@@ -20,6 +20,7 @@ class MainViewController: UIViewController {
     private lazy var memoDetailTextView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.isUserInteractionEnabled = true
         return textView
     }()
     private var statusBarView: UIView?
@@ -45,6 +46,7 @@ class MainViewController: UIViewController {
         traitCollectionDidChange(UIScreen.main.traitCollection)
         setupTable()
         setupTextView()
+        setupKeyboard()
         memoDetailTextviewChange(to: 0)
     }
     
@@ -141,6 +143,33 @@ class MainViewController: UIViewController {
     
     private func setupTextView() {
         memoDetailTextView.delegate = self
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapTextView(_:)))
+        memoDetailTextView.addGestureRecognizer(tapGesture)
+        setTextViewAllDataDetectorTypes()
+    }
+    
+    @objc private func tapTextView(_ gesture: UITapGestureRecognizer) {
+        memoDetailTextView.isEditable = true
+        memoDetailTextView.dataDetectorTypes = []
+        memoDetailTextView.becomeFirstResponder()
+    }
+    
+    private func setTextViewAllDataDetectorTypes() {
+        memoDetailTextView.isEditable = false
+        memoDetailTextView.dataDetectorTypes = [.all]
+    }
+    
+    private func setupKeyboard() {
+        let keyboardToolbar = UIToolbar()
+        keyboardToolbar.sizeToFit()
+        let doneButton = UIBarButtonItem(title: "완료", style: .done, target: self, action: #selector(touchUpDoneButton(_:)))
+        keyboardToolbar.items = [doneButton]
+        
+        memoDetailTextView.inputAccessoryView = keyboardToolbar
+    }
+    
+    @objc func touchUpDoneButton(_ sender: Any) {
+        self.view.endEditing(true)
     }
     
     //MARK: - memoDetailTextView Method
@@ -149,5 +178,12 @@ class MainViewController: UIViewController {
             return
         }
         memoDetailTextView.text = items[index].body
+    }
+}
+
+// MARK: - TextView Delegate
+extension MainViewController: UITextViewDelegate {
+    func textViewDidEndEditing(_ textView: UITextView) {
+        self.setTextViewAllDataDetectorTypes()
     }
 }
