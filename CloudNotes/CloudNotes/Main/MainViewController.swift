@@ -6,6 +6,7 @@
 
 import UIKit
 
+// TODO: textview content tracking URL, phone, date
 class MainViewController: UIViewController {
     // MARK: - UI Properties
     private lazy var memoListTableView: UITableView = {
@@ -143,7 +144,7 @@ class MainViewController: UIViewController {
     }
     
     //MARK: - memoDetailTextView Method
-    private func memoDetailTextviewChange(to index: Int) {
+    func memoDetailTextviewChange(to index: Int) {
         guard let items = sampleMemoData else {
             return
         }
