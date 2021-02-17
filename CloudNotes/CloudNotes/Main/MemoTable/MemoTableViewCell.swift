@@ -25,7 +25,6 @@ class MemoTableViewCell: UITableViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.preferredFont(forTextStyle: .callout)
         label.textColor = .systemGray
-        label.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         return label
     }()
     

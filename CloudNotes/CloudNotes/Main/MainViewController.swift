@@ -8,6 +8,11 @@ import UIKit
 
 class MainViewController: UIViewController {
     // MARK: - UI Properties
+    private lazy var containerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
     private lazy var memoListTableView: UITableView = {
         let tableView = UITableView(frame: UIScreen.main.bounds, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -40,6 +45,7 @@ class MainViewController: UIViewController {
         } catch {
             self.showError(error, okHandler: nil)
         }
+        setupUI()
         setupTable()
         setupTextView()
         setupKeyboard()
@@ -89,15 +95,19 @@ class MainViewController: UIViewController {
     }
 
     // MARK: - setup Method
+    private func setupUI() {
+        self.view.addSubview(containerView)
+        containerView.addSubview(memoListTableView)
+        containerView.addSubview(memoDetailTextView)
+    }
+    
     private func setupTable() {
-        self.view.addSubview(memoListTableView)
         memoListTableView.rowHeight = UITableView.automaticDimension
         memoListTableView.estimatedRowHeight = 70
         memoListTableView.register(MemoTableViewCell.self, forCellReuseIdentifier: "memoCell")
     }
     
     private func setupTextView() {
-        self.view.addSubview(memoDetailTextView)
         memoDetailTextView.delegate = self
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapTextView(_:)))
         memoDetailTextView.addGestureRecognizer(tapGesture)
@@ -130,21 +140,30 @@ class MainViewController: UIViewController {
     
     private func setupConstraints() {
         commonConstraints.append(contentsOf: [
-            memoListTableView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
-            memoListTableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            memoListTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
+            containerView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            containerView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
+            
+            memoListTableView.topAnchor.constraint(equalTo: self.containerView.topAnchor),
+            memoListTableView.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor),
+            memoListTableView.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor)
         ])
         
         compactConstraints.append(contentsOf: [
-            memoListTableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
+            containerView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            
+            memoListTableView.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor)
         ])
         
         regularConstraints.append(contentsOf: [
-            memoListTableView.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.4),
-            memoDetailTextView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            containerView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
+            
+            memoListTableView.widthAnchor.constraint(equalTo: self.containerView.widthAnchor, multiplier: 0.4),
+            memoDetailTextView.topAnchor.constraint(equalTo: self.containerView.topAnchor),
             memoDetailTextView.leadingAnchor.constraint(equalTo: memoListTableView.trailingAnchor),
-            memoDetailTextView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-            memoDetailTextView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor)
+            memoDetailTextView.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor),
+            memoDetailTextView.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor)
         ])
     }
     
