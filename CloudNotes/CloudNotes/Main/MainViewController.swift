@@ -149,7 +149,7 @@ class MainViewController: UIViewController {
     
     private func setupConstraints() {
         commonConstraints.append(contentsOf: [
-            containerView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
+            containerView.topAnchor.constraint(equalTo: self.view.topAnchor),
             containerView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
             
             memoListTableView.topAnchor.constraint(equalTo: self.containerView.topAnchor),
