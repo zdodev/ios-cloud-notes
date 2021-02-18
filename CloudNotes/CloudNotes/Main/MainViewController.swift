@@ -11,6 +11,7 @@ class MainViewController: UIViewController {
     private lazy var containerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .white
         return view
     }()
     private lazy var memoListTableView: UITableView = {
@@ -165,13 +166,13 @@ class MainViewController: UIViewController {
         
         regularConstraints.append(contentsOf: [
             containerView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            containerView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
             
             memoListTableView.widthAnchor.constraint(equalTo: self.containerView.widthAnchor, multiplier: 0.4),
             memoDetailTextView.topAnchor.constraint(equalTo: self.containerView.topAnchor),
             memoDetailTextView.leadingAnchor.constraint(equalTo: memoListTableView.trailingAnchor),
             memoDetailTextView.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor),
-            memoDetailTextView.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor)
+            memoDetailTextView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor)
         ])
     }
     
