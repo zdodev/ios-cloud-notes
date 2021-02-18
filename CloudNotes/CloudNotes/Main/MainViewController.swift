@@ -128,8 +128,9 @@ class MainViewController: UIViewController {
     private func setupKeyboard() {
         let keyboardToolbar = UIToolbar()
         keyboardToolbar.sizeToFit()
+        let space = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil , action: nil)
         let doneButton = UIBarButtonItem(title: "완료", style: .done, target: self, action: #selector(touchUpDoneButton(_:)))
-        keyboardToolbar.items = [doneButton]
+        keyboardToolbar.items = [space, doneButton]
         
         memoDetailTextView.inputAccessoryView = keyboardToolbar
     }
