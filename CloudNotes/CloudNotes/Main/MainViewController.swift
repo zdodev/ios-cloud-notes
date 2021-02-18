@@ -16,7 +16,7 @@ class MainViewController: UIViewController {
     private lazy var memoListTableView: UITableView = {
         let tableView = UITableView(frame: UIScreen.main.bounds, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = .systemGroupedBackground
+        tableView.backgroundColor = statusBarColor
         tableView.dataSource = self
         tableView.delegate = self
         return tableView
@@ -27,6 +27,7 @@ class MainViewController: UIViewController {
         textView.isUserInteractionEnabled = true
         return textView
     }()
+    private let statusBarColor = UIColor.systemGroupedBackground
     private var statusBarView: UIView?
     let memoListTableHeader = MemoTableHeader()
     
@@ -40,6 +41,7 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         do {
             try initMemoSampleData()
         } catch {
@@ -51,27 +53,36 @@ class MainViewController: UIViewController {
         setupKeyboard()
         setupConstraints()
         traitCollectionDidChange(UIScreen.main.traitCollection)
-        memoDetailTextviewChange(to: 0)
+        memoDetailTextViewChange(to: 0)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
+        navigationController?.isNavigationBarHidden = true
         setupStatusBar()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        self.navigationController?.navigationBar.barTintColor = statusBarColor
+        navigationController?.isNavigationBarHidden = false
     }
     
     // MARK: - handle traitCollection
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         
-        setupLayout(with: previousTraitCollection)
+        setupLayout()
     }
     
-    private func setupLayout(with previousTraitCollection: UITraitCollection?) {
+    private func setupLayout() {
         NSLayoutConstraint.activate(commonConstraints)
         if statusBarView?.frame == CGRect.zero {
             setupStatusBar()
         }
+        
         if traitCollection.horizontalSizeClass == .compact && traitCollection.verticalSizeClass == .regular {
             memoDetailTextView.isHidden = true
             statusBarView?.isHidden = false
@@ -99,6 +110,7 @@ class MainViewController: UIViewController {
         self.view.addSubview(containerView)
         containerView.addSubview(memoListTableView)
         containerView.addSubview(memoDetailTextView)
+        self.navigationItem.title = "메모"
     }
     
     private func setupTable() {
@@ -111,18 +123,13 @@ class MainViewController: UIViewController {
         memoDetailTextView.delegate = self
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapTextView(_:)))
         memoDetailTextView.addGestureRecognizer(tapGesture)
-        setTextViewAllDataDetectorTypes()
+        memoDetailTextView.setTextViewAllDataDetectorTypes()
     }
     
     @objc private func tapTextView(_ gesture: UITapGestureRecognizer) {
         memoDetailTextView.isEditable = true
         memoDetailTextView.dataDetectorTypes = []
         memoDetailTextView.becomeFirstResponder()
-    }
-    
-    private func setTextViewAllDataDetectorTypes() {
-        memoDetailTextView.isEditable = false
-        memoDetailTextView.dataDetectorTypes = [.all]
     }
     
     private func setupKeyboard() {
@@ -177,29 +184,28 @@ class MainViewController: UIViewController {
                 return
             }
             statusBarView = UIView(frame: statusBarManager?.statusBarFrame ?? CGRect.zero)
-            statusBarView?.backgroundColor = .systemGroupedBackground
+            statusBarView?.backgroundColor = statusBarColor
             guard let statusBarView = self.statusBarView else {
                 return
             }
             window?.addSubview(statusBarView)
         } else {
             let statusBarView = UIApplication.shared.value(forKey: "statusBar") as? UIView
-            statusBarView?.backgroundColor = .systemGroupedBackground
+            statusBarView?.backgroundColor = statusBarColor
         }
-    }
-    
-    //MARK: - memoDetailTextView Method
-    func memoDetailTextviewChange(to index: Int) {
-        guard let items = sampleMemoData else {
-            return
-        }
-        memoDetailTextView.text = items[index].body
     }
 }
 
 // MARK: - TextView Delegate
 extension MainViewController: UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
-        self.setTextViewAllDataDetectorTypes()
+        textView.setTextViewAllDataDetectorTypes()
+    }
+    
+    func memoDetailTextViewChange(to index: Int) {
+        guard let items = sampleMemoData else {
+            return
+        }
+        memoDetailTextView.text = items[index].body
     }
 }

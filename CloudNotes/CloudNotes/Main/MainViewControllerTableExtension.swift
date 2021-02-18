@@ -40,6 +40,23 @@ extension MainViewController: UITableViewDataSource {
 extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
-        self.memoDetailTextviewChange(to: indexPath.row)
+        if traitCollection.horizontalSizeClass == .compact && traitCollection.verticalSizeClass == .regular {
+            selectTableViewCellCompactMode(to: indexPath.row)
+        } else {
+            selectTableViewCellRegularMode(to: indexPath.row)
+        }
+    }
+    
+    private func selectTableViewCellCompactMode(to: Int) {
+        guard let memoList = self.sampleMemoData else {
+            return
+        }
+        let memoDetailViewController = MemoDetailViewController()
+        memoDetailViewController.memo = memoList[to]
+        self.navigationController?.pushViewController(memoDetailViewController, animated: true)
+    }
+    
+    private func selectTableViewCellRegularMode(to: Int) {
+        self.memoDetailTextViewChange(to: to)
     }
 }
