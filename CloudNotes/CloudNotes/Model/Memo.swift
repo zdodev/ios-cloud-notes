@@ -22,8 +22,8 @@ struct Memo: Decodable {
 extension Memo {
     var dateTimeToString: String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy. MM. dd"
-        dateFormatter.locale = Locale(identifier: "ko")
+        dateFormatter.dateStyle = .medium
+        dateFormatter.locale = Locale.autoupdatingCurrent
         let date = Date(timeIntervalSince1970: lastModified)
         return dateFormatter.string(from: date)
     }
