@@ -8,30 +8,52 @@
 import UIKit
 
 class MemoDetailViewController: UIViewController {
+    // MARK: - UI property
     private lazy var memoDetailTextView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.isUserInteractionEnabled = true
         return textView
     }()
-    var memo: Memo? = nil
+    
+    // MARK: - data property
+    private var memo: MemoModel? {
+        didSet {
+            displayMemo()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationController?.navigationBar.isHidden = true
         setupUI()
         setupTextView()
         setupKeyboard()
         displayMemo()
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        setupNavigationBar()
+    }
+    
+    private func setupNavigationBar() {
+        if traitCollection.userInterfaceIdiom == .pad && UIDevice.current.orientation.isLandscape {
+            navigationController?.navigationBar.isHidden = true
+        } else {
+            navigationController?.navigationBar.isHidden = false
+        }
+    }
+    
     // MARK: - setup UI
     private func setupUI() {
+        self.view.backgroundColor = .white
         self.view.addSubview(memoDetailTextView)
         memoDetailTextView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
         memoDetailTextView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
         memoDetailTextView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        memoDetailTextView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        memoDetailTextView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
     }
     
     private func setupTextView() {
@@ -67,6 +89,7 @@ class MemoDetailViewController: UIViewController {
         }
         self.navigationItem.title = memo.title
         memoDetailTextView.text = memo.body
+        
     }
 }
 
@@ -74,5 +97,11 @@ class MemoDetailViewController: UIViewController {
 extension MemoDetailViewController: UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
         textView.setTextViewAllDataDetectorTypes()
+    }
+}
+
+extension MemoDetailViewController: MemoListSelectDelegate {
+    func memoCellSelect(_ memo: MemoModel) {
+        self.memo = memo
     }
 }
