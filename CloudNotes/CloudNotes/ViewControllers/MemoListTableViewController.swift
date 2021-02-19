@@ -17,6 +17,7 @@ class MemoListTableViewController: UITableViewController {
         setupTableView()
         do {
             try Memo.shared.decodeMemoData()
+            self.delegate?.memoCellSelect(Memo.shared.list[0])
         } catch {
             // TODO: add Handling error
         }

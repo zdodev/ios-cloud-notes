@@ -26,11 +26,16 @@ class MemoDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupNavigationBar()
+        navigationController?.navigationBar.isHidden = true
         setupUI()
         setupTextView()
         setupKeyboard()
         displayMemo()
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        setupNavigationBar()
     }
     
     private func setupNavigationBar() {
@@ -43,11 +48,12 @@ class MemoDetailViewController: UIViewController {
     
     // MARK: - setup UI
     private func setupUI() {
+        self.view.backgroundColor = .white
         self.view.addSubview(memoDetailTextView)
         memoDetailTextView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
         memoDetailTextView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
         memoDetailTextView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        memoDetailTextView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
+        memoDetailTextView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
     }
     
     private func setupTextView() {
@@ -83,6 +89,7 @@ class MemoDetailViewController: UIViewController {
         }
         self.navigationItem.title = memo.title
         memoDetailTextView.text = memo.body
+        
     }
 }
 
