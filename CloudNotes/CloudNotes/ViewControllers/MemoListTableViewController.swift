@@ -49,7 +49,7 @@ extension MemoListTableViewController {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "memoCell") as? MemoTableViewCell else {
             return UITableViewCell()
         }
-        cell.displayUI(with: Memo.shared.list[indexPath.row])
+        cell.setupMemoCell(with: Memo.shared.list[indexPath.row])
         return cell
     }
     

@@ -17,7 +17,7 @@ class MemoDetailViewController: UIViewController {
     }()
     
     // MARK: - data property
-    var memo: MemoModel? {
+    private var memo: MemoModel? {
         didSet {
             displayMemo()
         }
