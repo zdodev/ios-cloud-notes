@@ -8,21 +8,37 @@
 import UIKit
 
 class MemoDetailViewController: UIViewController {
+    // MARK: - UI property
     private lazy var memoDetailTextView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.isUserInteractionEnabled = true
         return textView
     }()
-    var memo: Memo? = nil
+    
+    // MARK: - data property
+    var memo: MemoModel? {
+        didSet {
+            displayMemo()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupNavigationBar()
         setupUI()
         setupTextView()
         setupKeyboard()
         displayMemo()
+    }
+    
+    private func setupNavigationBar() {
+        if traitCollection.userInterfaceIdiom == .pad && UIDevice.current.orientation.isLandscape {
+            navigationController?.navigationBar.isHidden = true
+        } else {
+            navigationController?.navigationBar.isHidden = false
+        }
     }
     
     // MARK: - setup UI
@@ -74,5 +90,11 @@ class MemoDetailViewController: UIViewController {
 extension MemoDetailViewController: UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
         textView.setTextViewAllDataDetectorTypes()
+    }
+}
+
+extension MemoDetailViewController: MemoListSelectDelegate {
+    func memoCellSelect(_ memo: MemoModel) {
+        self.memo = memo
     }
 }
