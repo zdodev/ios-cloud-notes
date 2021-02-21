@@ -103,5 +103,7 @@ extension MemoDetailViewController: UITextViewDelegate {
 extension MemoDetailViewController: MemoListSelectDelegate {
     func memoCellSelect(_ memo: MemoModel) {
         self.memo = memo
+
+        memoDetailTextView.setContentOffset(.zero, animated: true)
     }
 }
