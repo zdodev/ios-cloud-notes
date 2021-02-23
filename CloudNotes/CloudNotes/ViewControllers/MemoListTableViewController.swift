@@ -36,7 +36,8 @@ class MemoListTableViewController: UITableViewController {
     
     // TODO: add method logic
     @objc func addMemo() {
-        
+        let memoInsertView = MemoInsertViewController()
+        navigationController?.pushViewController(memoInsertView, animated: true)
     }
 }
 
