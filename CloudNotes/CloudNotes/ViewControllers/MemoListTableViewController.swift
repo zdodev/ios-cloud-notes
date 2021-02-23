@@ -65,7 +65,7 @@ extension MemoListTableViewController {
         
         delegate?.memoCellSelect(Memo.shared.list[indexPath.row])
         if let memoDetailViewController = delegate as? MemoDetailViewController {
-            splitViewController?.showDetailViewController(memoDetailViewController, sender: nil)
+            splitViewController?.showDetailViewController(UINavigationController(rootViewController: memoDetailViewController), sender: nil)
         }
     }
 }

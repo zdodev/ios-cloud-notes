@@ -16,6 +16,12 @@ class MemoDetailViewController: UIViewController {
         return textView
     }()
     
+    private let moreButton: UIBarButtonItem = {
+        let barButtonItem = UIBarButtonItem()
+        barButtonItem.image = UIImage(systemName: "ellipsis.circle")
+        return barButtonItem
+    }()
+    
     // MARK: - data property
     private var memo: MemoModel? {
         didSet {
@@ -26,25 +32,27 @@ class MemoDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.navigationBar.isHidden = true
+//        navigationController?.navigationBar.isHidden = false
+        navigationItem.rightBarButtonItem = moreButton
+        
         setupUI()
         setupTextView()
         setupKeyboard()
         displayMemo()
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        setupNavigationBar()
-    }
+//    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+//        super.viewWillTransition(to: size, with: coordinator)
+//        setupNavigationBar()
+//    }
     
-    private func setupNavigationBar() {
-        if traitCollection.userInterfaceIdiom == .pad && UIDevice.current.orientation.isLandscape {
-            navigationController?.navigationBar.isHidden = true
-        } else {
-            navigationController?.navigationBar.isHidden = false
-        }
-    }
+//    private func setupNavigationBar() {
+//        if traitCollection.userInterfaceIdiom == .pad && UIDevice.current.orientation.isLandscape {
+//            navigationController?.navigationBar.isHidden = false
+//        } else {
+//            navigationController?.navigationBar.isHidden = false
+//        }
+//    }
     
     // MARK: - setup UI
     private func setupUI() {
