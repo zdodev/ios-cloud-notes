@@ -1,18 +1,12 @@
 import UIKit
 
 class MemoInsertViewController: UIViewController {
-    let moreButton: UIBarButtonItem = {
-        let barButtonItem = UIBarButtonItem()
-        barButtonItem.image = UIImage(systemName: "ellipsis.circle")
-        return barButtonItem
-    }()
-    
-    let doneButton: UIBarButtonItem = {
+    private let doneButton: UIBarButtonItem = {
         let barButtonItem = UIBarButtonItem(systemItem: .done)
         return barButtonItem
     }()
     
-    let memoTextView: UITextView = {
+    private let memoTextView: UITextView = {
         let textView = UITextView()
         textView.translatesAutoresizingMaskIntoConstraints = false
         return textView
@@ -22,7 +16,7 @@ class MemoInsertViewController: UIViewController {
         super.viewDidLoad()
         self.view.backgroundColor = .systemBackground
         self.view.addSubview(memoTextView)
-        navigationItem.rightBarButtonItems = [doneButton, moreButton]
+        navigationItem.rightBarButtonItem = doneButton
         
         setupTextView()
     }
