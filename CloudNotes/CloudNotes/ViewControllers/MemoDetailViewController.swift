@@ -65,8 +65,10 @@ class MemoDetailViewController: UIViewController {
         guard let memo = memo else {
             return
         }
-        self.navigationItem.title = memo.title
-        memoDetailTextView.text = memo.body
+        
+        let content = NSMutableAttributedString(string: memo.title, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .title1)])
+        content.append(NSAttributedString(string: "\n\n" + memo.body, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .body)]))
+        memoDetailTextView.attributedText = content
     }
 }
 
