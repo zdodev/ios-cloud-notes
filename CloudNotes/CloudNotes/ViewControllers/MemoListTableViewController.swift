@@ -15,6 +15,7 @@ class MemoListTableViewController: UITableViewController {
         
         setupNavigationBar()
         setupTableView()
+        fetchMemo()
     }
     
     private func setupNavigationBar() {
@@ -38,6 +39,15 @@ class MemoListTableViewController: UITableViewController {
            (traitCollection.horizontalSizeClass == .compact && traitCollection.userInterfaceIdiom == .phone) {
             let memoDetailNavigationController = UINavigationController(rootViewController: memoDetailViewController)
             splitViewController?.showDetailViewController(memoDetailNavigationController, sender: nil)
+        }
+    }
+    
+    private func fetchMemo() {
+        do {
+            try MemoModel.shared.fetch()
+            self.tableView.reloadData()
+        } catch {
+            self.showError(error, okHandler: nil)
         }
     }
 }

@@ -37,7 +37,7 @@ class MemoModel {
     }
     
     // TODO: sort
-    func fetch() throws -> [Memo] {
+    func fetch() throws {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             throw MemoError.fetchMemo
         }
@@ -48,7 +48,7 @@ class MemoModel {
             guard let memoObjectList = result as? [Memo] else {
                 throw MemoError.fetchMemo
             }
-            return memoObjectList
+            self.list = memoObjectList
         } catch {
             throw error
         }
