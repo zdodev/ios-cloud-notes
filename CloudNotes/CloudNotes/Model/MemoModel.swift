@@ -28,3 +28,34 @@
 //        return dateFormatter.string(from: date)
 //    }
 //}
+
+import UIKit
+import CoreData
+
+class MemoModel {
+    static let shared = MemoModel()
+    private init() {}
+    
+    var list: [Memo] = []
+    
+    func save(title: String, body: String) -> Bool {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let context = appDelegate.persistentContainer.viewContext
+        
+        let object = NSEntityDescription.insertNewObject(forEntityName: "Memo", into: context)
+        object.setValue(title, forKey: "title")
+        object.setValue(body, forKey: "body")
+        object.setValue(Date(), forKey: "lastModified")
+        
+        do {
+            try context.save()
+            self.list.append(object as! Memo)
+            
+            print("❗️ \(list.count)")
+            return true
+        } catch {
+            context.rollback()
+            return false
+        }
+    }
+}

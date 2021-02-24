@@ -15,12 +15,6 @@ class MemoListTableViewController: UITableViewController {
         
         setupNavigationBar()
         setupTableView()
-        do {
-            try Memo.shared.decodeMemoData()
-            self.delegate?.memoCellSelect(Memo.shared.list[0])
-        } catch {
-            // TODO: add Handling error
-        }
     }
     
     private func setupNavigationBar() {
@@ -33,24 +27,32 @@ class MemoListTableViewController: UITableViewController {
         self.tableView.estimatedRowHeight = 70
         self.tableView.register(MemoTableViewCell.self, forCellReuseIdentifier: "memoCell")
     }
-    
-    // TODO: add method logic
+
     @objc func addMemo() {
-        
+        delegate?.memoCellSelect(nil)
+        moveToMemoDetailViewController()
+    }
+    
+    private func moveToMemoDetailViewController() {
+        if let memoDetailViewController = delegate as? MemoDetailViewController,
+           (traitCollection.horizontalSizeClass == .compact && traitCollection.userInterfaceIdiom == .phone) {
+            let memoDetailNavigationController = UINavigationController(rootViewController: memoDetailViewController)
+            splitViewController?.showDetailViewController(memoDetailNavigationController, sender: nil)
+        }
     }
 }
 
 extension MemoListTableViewController {
     // MARK: - Table view data source
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return Memo.shared.list.count
+        return MemoModel.shared.list.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "memoCell") as? MemoTableViewCell else {
             return UITableViewCell()
         }
-        cell.setupMemoCell(with: Memo.shared.list[indexPath.row])
+        cell.setupMemoCell(with: MemoModel.shared.list[indexPath.row])
         return cell
     }
     
@@ -61,17 +63,17 @@ extension MemoListTableViewController {
     // MARK: - Table view delegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        delegate?.memoCellSelect(Memo.shared.list[indexPath.row])
-        
-        if let memoDetailViewController = delegate as? MemoDetailViewController,
-           (traitCollection.horizontalSizeClass == .compact && traitCollection.userInterfaceIdiom == .phone) {
-            let memoDetailNavigationController = UINavigationController(rootViewController: memoDetailViewController)
-            splitViewController?.showDetailViewController(memoDetailNavigationController, sender: nil)
-        }
+        delegate?.memoCellSelect(MemoModel.shared.list[indexPath.row])
+        self.moveToMemoDetailViewController()
+    }
+}
+
+extension MemoListTableViewController: MemoDetailDelegate {
+    func saveMemo(indexRow: Int) {
+        self.tableView.insertRows(at: [IndexPath(row: indexRow, section: 0)], with: .automatic)
     }
 }
 
 protocol MemoListSelectDelegate: class {
-    func memoCellSelect(_ memo: MemoModel)
+    func memoCellSelect(_ memo: Memo?)
 }

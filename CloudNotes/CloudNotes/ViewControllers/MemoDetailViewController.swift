@@ -17,11 +17,13 @@ class MemoDetailViewController: UIViewController {
     }()
     
     // MARK: - data property
-    private var memo: MemoModel? {
+    private var memo: Memo? {
         didSet {
             displayMemo()
         }
     }
+    
+    weak var delegate: MemoDetailDelegate? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,6 +33,21 @@ class MemoDetailViewController: UIViewController {
         setupTextView()
         setupKeyboard()
         displayMemo()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        guard let title = memoDetailTextView.text,
+              let body = memoDetailTextView.text else {
+            return
+        }
+        
+        if let memo = memo {
+            // 수정
+        } else {
+            // 추가
+            let result = MemoModel.shared.save(title: title, body: body)
+            self.delegate?.saveMemo(indexRow: MemoModel.shared.list.count - 1)
+        }
     }
     
     // MARK: - setup UI
@@ -105,9 +122,14 @@ class MemoDetailViewController: UIViewController {
             return
         }
         
-        let content = NSMutableAttributedString(string: memo.title, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .title1)])
-        content.append(NSAttributedString(string: "\n\n" + memo.body, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .body)]))
-        memoDetailTextView.attributedText = content
+        if let title = memo.title,
+           let body = memo.body {
+            let content = NSMutableAttributedString(string: title, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .title1)])
+            content.append(NSAttributedString(string: "\n\n" + body, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .body)]))
+            memoDetailTextView.attributedText = content
+        } else {
+            memoDetailTextView.text = nil
+        }
     }
 }
 
@@ -121,7 +143,7 @@ extension MemoDetailViewController: UITextViewDelegate {
 }
 
 extension MemoDetailViewController: MemoListSelectDelegate {
-    func memoCellSelect(_ memo: MemoModel) {
+    func memoCellSelect(_ memo: Memo?) {
         self.memo = memo
     }
 }
@@ -180,4 +202,8 @@ extension UITextView {
         self.dataDetectorTypes = []
         self.becomeFirstResponder()
     }
+}
+
+protocol MemoDetailDelegate: class {
+    func saveMemo(indexRow: Int)
 }

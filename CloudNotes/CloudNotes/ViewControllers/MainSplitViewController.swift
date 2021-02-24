@@ -21,6 +21,7 @@ class MainSplitVieWController: UISplitViewController {
         memoListTableViewController.delegate = memoDetailViewController
         let memoListNavigationController = UINavigationController(rootViewController: memoListTableViewController)
         let memoDetailNavigationController = UINavigationController(rootViewController: memoDetailViewController)
+        memoDetailViewController.delegate = memoListTableViewController
         self.viewControllers = [memoListNavigationController, memoDetailNavigationController]
         self.preferredPrimaryColumnWidthFraction = 1/3
         self.preferredDisplayMode = .oneBesideSecondary
