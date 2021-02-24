@@ -29,7 +29,7 @@ class MemoModel {
         
         do {
             try context.save()
-            self.list.insert(memoObject, at: 0)
+            self.list.insert(memoObject, at: self.list.startIndex)
         } catch {
             context.rollback()
             throw error
@@ -79,11 +79,11 @@ class MemoModel {
         let object = list[index]
         object.setValue(title, forKey: "title")
         object.setValue(body, forKey: "body")
-        object.setValue(Date(), forKey: "lastModified")
-        list[index] = object
-        
+        object.setValue(Date(), forKey: "lastModified")        
         do {
             try context.save()
+            self.list.remove(at: index)
+            self.list.insert(object, at: self.list.startIndex)
         } catch {
             context.rollback()
             throw MemoError.updateMemo
