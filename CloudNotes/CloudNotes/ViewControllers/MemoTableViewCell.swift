@@ -82,9 +82,9 @@ class MemoTableViewCell: UITableViewCell {
     }
     
     // MARK: - display cell method
-    func setupMemoCell(with item: MemoModel) {
-        titleLabel.text = item.title
-        dateLabel.text = item.dateTimeToString
-        bodyLabel.text = item.body
-    }
+//    func setupMemoCell(with item: MemoModel) {
+//        titleLabel.text = item.title
+//        dateLabel.text = item.dateTimeToString
+//        bodyLabel.text = item.body
+//    }
 }

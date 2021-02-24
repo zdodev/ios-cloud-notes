@@ -17,6 +17,8 @@
 		28F0B7E225DF965100916219 /* MemoListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0B7E125DF965100916219 /* MemoListTableViewController.swift */; };
 		28F0B7EA25DF99A600916219 /* MemoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0B7E925DF99A600916219 /* MemoModel.swift */; };
 		28F0B80025DFA0AE00916219 /* MemoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F0B7FF25DFA0AE00916219 /* MemoTableViewCell.swift */; };
+		4100550925E6C1CD00980AF5 /* MemoModel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4100550725E6C1CD00980AF5 /* MemoModel+CoreDataClass.swift */; };
+		4100550A25E6C1CD00980AF5 /* MemoModel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4100550825E6C1CD00980AF5 /* MemoModel+CoreDataProperties.swift */; };
 		41E6AF3A25E4D96F00CB99BF /* MemoInsertViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41E6AF3925E4D96F00CB99BF /* MemoInsertViewController.swift */; };
 		C7481C6E25BBCF3900B9CA55 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7481C6D25BBCF3900B9CA55 /* AppDelegate.swift */; };
 		C7481C7025BBCF3900B9CA55 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7481C6F25BBCF3900B9CA55 /* SceneDelegate.swift */; };
@@ -55,6 +57,8 @@
 		28F0B7E125DF965100916219 /* MemoListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoListTableViewController.swift; sourceTree = "<group>"; };
 		28F0B7E925DF99A600916219 /* MemoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoModel.swift; sourceTree = "<group>"; };
 		28F0B7FF25DFA0AE00916219 /* MemoTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoTableViewCell.swift; sourceTree = "<group>"; };
+		4100550725E6C1CD00980AF5 /* MemoModel+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MemoModel+CoreDataClass.swift"; sourceTree = "<group>"; };
+		4100550825E6C1CD00980AF5 /* MemoModel+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MemoModel+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		41E6AF3925E4D96F00CB99BF /* MemoInsertViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoInsertViewController.swift; sourceTree = "<group>"; };
 		C7481C6A25BBCF3900B9CA55 /* CloudNotes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CloudNotes.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7481C6D25BBCF3900B9CA55 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -99,6 +103,8 @@
 		28046DCE25DBB53400E127FF /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				4100550725E6C1CD00980AF5 /* MemoModel+CoreDataClass.swift */,
+				4100550825E6C1CD00980AF5 /* MemoModel+CoreDataProperties.swift */,
 				28046DCF25DBB54500E127FF /* Memo.swift */,
 				28F0B7E925DF99A600916219 /* MemoModel.swift */,
 			);
@@ -125,9 +131,9 @@
 		28F0B7D825DF962A00916219 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				283FA8AA25DE570700902F3A /* MemoDetailViewController.swift */,
 				28F0B7D325DF95DD00916219 /* MainSplitViewController.swift */,
 				28F0B7E125DF965100916219 /* MemoListTableViewController.swift */,
+				283FA8AA25DE570700902F3A /* MemoDetailViewController.swift */,
 				28F0B7FF25DFA0AE00916219 /* MemoTableViewCell.swift */,
 				41E6AF3925E4D96F00CB99BF /* MemoInsertViewController.swift */,
 			);
@@ -331,8 +337,10 @@
 				28046DE225DBBAF200E127FF /* ViewControllerExtension.swift in Sources */,
 				28046DD025DBB54500E127FF /* Memo.swift in Sources */,
 				283FA8B825DE650C00902F3A /* UITextViewExtension.swift in Sources */,
+				4100550925E6C1CD00980AF5 /* MemoModel+CoreDataClass.swift in Sources */,
 				C7481C7825BBCF3900B9CA55 /* CloudNotes.xcdatamodeld in Sources */,
 				28F0B7E225DF965100916219 /* MemoListTableViewController.swift in Sources */,
+				4100550A25E6C1CD00980AF5 /* MemoModel+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

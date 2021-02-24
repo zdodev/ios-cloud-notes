@@ -15,12 +15,12 @@ class MemoListTableViewController: UITableViewController {
         
         setupNavigationBar()
         setupTableView()
-        do {
-            try Memo.shared.decodeMemoData()
-            self.delegate?.memoCellSelect(Memo.shared.list[0])
-        } catch {
+//        do {
+//            try Memo.shared.decodeMemoData()
+//            self.delegate?.memoCellSelect(Memo.shared.list[0])
+//        } catch {
             // TODO: add Handling error
-        }
+//        }
     }
     
     private func setupNavigationBar() {
@@ -51,7 +51,7 @@ extension MemoListTableViewController {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "memoCell") as? MemoTableViewCell else {
             return UITableViewCell()
         }
-        cell.setupMemoCell(with: Memo.shared.list[indexPath.row])
+//        cell.setupMemoCell(with: Memo.shared.list[indexPath.row])
         return cell
     }
     
@@ -63,7 +63,7 @@ extension MemoListTableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        delegate?.memoCellSelect(Memo.shared.list[indexPath.row])
+//        delegate?.memoCellSelect(Memo.shared.list[indexPath.row])
         if let memoDetailViewController = delegate as? MemoDetailViewController {
             splitViewController?.showDetailViewController(UINavigationController(rootViewController: memoDetailViewController), sender: nil)
         }
@@ -71,5 +71,5 @@ extension MemoListTableViewController {
 }
 
 protocol MemoListSelectDelegate: class {
-    func memoCellSelect(_ memo: MemoModel)
+//    func memoCellSelect(_ memo: MemoModel)
 }

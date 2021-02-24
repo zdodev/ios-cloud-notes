@@ -23,11 +23,11 @@ class MemoDetailViewController: UIViewController {
     }()
     
     // MARK: - data property
-    private var memo: MemoModel? {
-        didSet {
-            displayMemo()
-        }
-    }
+//    private var memo: MemoModel? {
+//        didSet {
+//            displayMemo()
+//        }
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +36,7 @@ class MemoDetailViewController: UIViewController {
         navigationItem.rightBarButtonItem = moreButton
         
         moreButton.target = self
-        moreButton.action = #selector(moreButtonTapped)
+        moreButton.action = #selector(TappedmoreButton)
         
         setupUI()
         setupTextView()
@@ -44,7 +44,7 @@ class MemoDetailViewController: UIViewController {
         displayMemo()
     }
     
-    @objc private func moreButtonTapped(_ sender: UIBarButtonItem) {
+    @objc private func TappedmoreButton(_ sender: UIBarButtonItem) {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let shareAction = UIAlertAction(title: "Share", style: .default, handler: nil)
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { alertAction in
@@ -116,11 +116,11 @@ class MemoDetailViewController: UIViewController {
     }
     
     private func displayMemo() {
-        guard let memo = memo else {
-            return
-        }
-        self.navigationItem.title = memo.title
-        memoDetailTextView.text = memo.body
+//        guard let memo = memo else {
+//            return
+//        }
+//        self.navigationItem.title = memo.title
+//        memoDetailTextView.text = memo.body
         
     }
 }
@@ -133,7 +133,7 @@ extension MemoDetailViewController: UITextViewDelegate {
 }
 
 extension MemoDetailViewController: MemoListSelectDelegate {
-    func memoCellSelect(_ memo: MemoModel) {
-        self.memo = memo
-    }
+//    func memoCellSelect(_ memo: MemoModel) {
+//        self.memo = memo
+//    }
 }
