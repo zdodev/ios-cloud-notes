@@ -39,7 +39,26 @@ class MemoDetailViewController: UIViewController {
         self.navigationItem.rightBarButtonItem = barButton
     }
     
-    @objc func showActionSheet() {
+    @objc func showActionSheet(_ sender: UIBarButtonItem) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let shareSheet = UIAlertAction(title: "Share...", style: .default) { _ in
+            print("click to share sheet")
+        }
+        let deleteSheet = UIAlertAction(title: "Delete...", style: .destructive) { _ in
+            print("click to delete sheet")
+        }
+        let cancelSheet = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        actionSheet.addAction(shareSheet)
+        actionSheet.addAction(deleteSheet)
+        actionSheet.addAction(cancelSheet)
+        
+        if traitCollection.userInterfaceIdiom == .phone {
+            self.present(actionSheet, animated: true, completion: nil)
+        } else {
+            actionSheet.popoverPresentationController?.barButtonItem = sender
+            self.present(actionSheet, animated: true, completion: nil)
+        }
         
     }
     
