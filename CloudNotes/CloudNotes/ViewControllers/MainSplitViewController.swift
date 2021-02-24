@@ -18,10 +18,14 @@ class MainSplitVieWController: UISplitViewController {
     private func setupViewControllers() {
         let memoListTableViewController = MemoListTableViewController()
         let memoDetailViewController = MemoDetailViewController()
+        
+        memoDetailViewController.delegate = memoListTableViewController
+        let memoDetailNavigationController = UINavigationController(rootViewController: memoDetailViewController)
+        
         memoListTableViewController.delegate = memoDetailViewController
         let memoListNavigationController = UINavigationController(rootViewController: memoListTableViewController)
-        memoDetailViewController.delegate = memoListTableViewController
-        self.viewControllers = [memoListNavigationController, memoDetailViewController]
+        
+        self.viewControllers = [memoListNavigationController, memoDetailNavigationController]
         self.preferredPrimaryColumnWidthFraction = 1/3
         self.preferredDisplayMode = .oneBesideSecondary
     }
