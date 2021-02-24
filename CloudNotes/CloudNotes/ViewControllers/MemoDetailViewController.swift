@@ -7,6 +7,7 @@
 
 import UIKit
 
+// TODO: scroll keyboard
 class MemoDetailViewController: UIViewController {
     // MARK: - UI property
     private lazy var memoDetailTextView: UITextView = {
@@ -86,16 +87,6 @@ class MemoDetailViewController: UIViewController {
         }
     }
     
-    private func divideMemoString(with memo: String) -> (title: String?, body: String?) {
-        var divideMemo = memo.components(separatedBy: "\n")
-        let title = divideMemo.first
-        divideMemo.remove(at: divideMemo.startIndex)
-        let body = divideMemo.reduce("", { (result, memoBody) -> String in
-            return result + memoBody
-        })
-        return (title, body)
-    }
-    
     private func deleteMemo() {
         guard let index = index else {
             return self.showError(MemoError.deleteMemo, okHandler: nil)
@@ -107,6 +98,16 @@ class MemoDetailViewController: UIViewController {
             self.showError(error, okHandler: nil)
         }
         self.navigationController?.navigationController?.popViewController(animated: true)
+    }
+    
+    private func divideMemoString(with memo: String) -> (title: String?, body: String?) {
+        var divideMemo = memo.components(separatedBy: "\n")
+        let title = divideMemo.first
+        divideMemo.remove(at: divideMemo.startIndex)
+        let body = divideMemo.reduce("", { (result, memoBody) -> String in
+            return result + memoBody
+        })
+        return (title, body)
     }
     
     // MARK: - setup UI
