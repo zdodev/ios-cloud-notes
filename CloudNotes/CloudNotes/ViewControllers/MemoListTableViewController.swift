@@ -65,7 +65,7 @@ extension MemoListTableViewController {
         delegate?.memoCellSelect(Memo.shared.list[indexPath.row])
         
         if let memoDetailViewController = delegate as? MemoDetailViewController,
-           (UIDevice.current.orientation.isPortrait && traitCollection.userInterfaceIdiom == .phone) {
+           (traitCollection.horizontalSizeClass == .compact && traitCollection.userInterfaceIdiom == .phone) {
             let memoDetailNavigationController = UINavigationController(rootViewController: memoDetailViewController)
             splitViewController?.showDetailViewController(memoDetailNavigationController, sender: nil)
         }

@@ -26,6 +26,7 @@ class MemoDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupNavigationBar()
         setupUI()
         setupTextView()
         setupKeyboard()
@@ -33,6 +34,15 @@ class MemoDetailViewController: UIViewController {
     }
     
     // MARK: - setup UI
+    private func setupNavigationBar() {
+        let barButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), style: .plain, target: self, action: #selector(showActionSheet))
+        self.navigationItem.rightBarButtonItem = barButton
+    }
+    
+    @objc func showActionSheet() {
+        
+    }
+    
     private func setupUI() {
         self.view.backgroundColor = .white
         self.view.addSubview(memoDetailTextView)
@@ -87,6 +97,7 @@ extension MemoDetailViewController: MemoListSelectDelegate {
     }
 }
 
+// TODO: refactor
 extension UITextView {
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         print("touches")
