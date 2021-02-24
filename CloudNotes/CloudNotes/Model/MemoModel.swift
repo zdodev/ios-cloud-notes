@@ -50,8 +50,6 @@ class MemoModel {
         do {
             try context.save()
             self.list.append(object as! Memo)
-            
-            print("❗️ \(list.count)")
             return true
         } catch {
             context.rollback()

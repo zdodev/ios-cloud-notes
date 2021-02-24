@@ -28,14 +28,20 @@ class MemoDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupNavigationBar()
         setupUI()
         setupTextView()
         setupKeyboard()
         displayMemo()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        setupNavigationBar()
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
+        if memoDetailTextView.text.isEmpty {
+            return
+        }
         guard let title = memoDetailTextView.text,
               let body = memoDetailTextView.text else {
             return
@@ -117,13 +123,9 @@ class MemoDetailViewController: UIViewController {
         self.view.endEditing(true)
     }
     
-    private func displayMemo() {
-        guard let memo = memo else {
-            return
-        }
-        
-        if let title = memo.title,
-           let body = memo.body {
+    private func displayMemo() {        
+        if let title = memo?.title,
+           let body = memo?.body {
             let content = NSMutableAttributedString(string: title, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .title1)])
             content.append(NSAttributedString(string: "\n\n" + body, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .body)]))
             memoDetailTextView.attributedText = content
