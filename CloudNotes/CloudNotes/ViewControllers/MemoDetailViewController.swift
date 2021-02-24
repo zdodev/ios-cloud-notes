@@ -45,7 +45,7 @@ class MemoDetailViewController: UIViewController {
             print("click to share sheet")
         }
         let deleteSheet = UIAlertAction(title: "Delete...", style: .destructive) { _ in
-            print("click to delete sheet")
+            self.showDeleteMemoAlert()
         }
         let cancelSheet = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         
@@ -59,7 +59,17 @@ class MemoDetailViewController: UIViewController {
             actionSheet.popoverPresentationController?.barButtonItem = sender
             self.present(actionSheet, animated: true, completion: nil)
         }
-        
+    }
+    
+    private func showDeleteMemoAlert() {
+        let alertController = UIAlertController(title: "진짜요?", message: "정말로 삭제하시겠어요?", preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
+            print("삭제할꼬야")
+        }
+        alertController.addAction(cancelAction)
+        alertController.addAction(deleteAction)
+        self.present(alertController, animated: true, completion: nil)
     }
     
     private func setupUI() {
