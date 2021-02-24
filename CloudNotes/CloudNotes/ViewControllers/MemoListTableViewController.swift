@@ -63,17 +63,29 @@ extension MemoListTableViewController {
     // MARK: - Table view delegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        delegate?.memoCellSelect(MemoModel.shared.list[indexPath.row])
+        delegate?.memoCellSelect(indexPath.row)
         self.moveToMemoDetailViewController()
+    }
+    
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "삭제") { (_, _, _) in
+            print("delete")
+        }
+        
+        return UISwipeActionsConfiguration(actions: [deleteAction])
     }
 }
 
 extension MemoListTableViewController: MemoDetailDelegate {
     func saveMemo(indexRow: Int) {
-        self.tableView.insertRows(at: [IndexPath(row: indexRow, section: 0)], with: .automatic)
+        self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
+    }
+    
+    func deleteMemo(indexRow: Int) {
+        self.tableView.deleteRows(at: [IndexPath(row: indexRow, section: 0)], with: .automatic)
     }
 }
 
 protocol MemoListSelectDelegate: class {
-    func memoCellSelect(_ memo: Memo?)
+    func memoCellSelect(_ index: Int?)
 }

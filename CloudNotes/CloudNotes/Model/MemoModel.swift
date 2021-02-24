@@ -14,7 +14,7 @@ class MemoModel {
     
     var list: [Memo] = []
     
-    func save(title: String, body: String) throws -> Bool {
+    func save(title: String, body: String) throws {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             throw MemoError.saveMemo
         }
@@ -29,14 +29,14 @@ class MemoModel {
         
         do {
             try context.save()
-            self.list.append(memoObject)
-            return true
+            self.list.insert(memoObject, at: 0)
         } catch {
             context.rollback()
             throw error
         }
     }
     
+    // TODO: sort
     func fetch() throws -> [Memo] {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             throw MemoError.fetchMemo
@@ -54,7 +54,7 @@ class MemoModel {
         }
     }
     
-    func delete(index: Int) throws -> Bool {
+    func delete(index: Int) throws {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             throw MemoError.deleteMemo
         }
@@ -62,14 +62,14 @@ class MemoModel {
         context.delete(list[index])
         do {
             try context.save()
-            return true
+            self.list.remove(at: index)
         } catch {
             context.rollback()
             throw MemoError.deleteMemo
         }
     }
     
-    func update(index: Int, title: String, body: String) throws -> Bool {
+    func update(index: Int, title: String, body: String) throws {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             throw MemoError.updateMemo
         }
@@ -81,7 +81,6 @@ class MemoModel {
         
         do {
             try context.save()
-            return true
         } catch {
             context.rollback()
             throw MemoError.updateMemo

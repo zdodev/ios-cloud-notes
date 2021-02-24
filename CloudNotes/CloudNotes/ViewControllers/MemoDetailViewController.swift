@@ -17,13 +17,11 @@ class MemoDetailViewController: UIViewController {
     }()
     
     // MARK: - data property
-    
-    private var memo: Memo? {
+    private var index: Int? {
         didSet {
             displayMemo()
         }
     }
-    
     weak var delegate: MemoDetailDelegate? = nil
     
     override func viewDidLoad() {
@@ -40,6 +38,16 @@ class MemoDetailViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        if let index = index {
+            // 수정
+            updateMemo(with: index)
+        } else {
+            // 추가
+            saveMemo()
+        }
+    }
+    
+    private func saveMemo() {
         if memoDetailTextView.text.isEmpty {
             return
         }
@@ -47,13 +55,27 @@ class MemoDetailViewController: UIViewController {
               let body = memoDetailTextView.text else {
             return
         }
-        
-        if let memo = memo {
-            // 수정
-        } else {
-            // 추가
-            let result = try? MemoModel.shared.save(title: title, body: body)
+        do {
+            try MemoModel.shared.save(title: title, body: body)
             self.delegate?.saveMemo(indexRow: MemoModel.shared.list.count - 1)
+        } catch {
+            self.showError(error, okHandler: nil)
+        }
+    }
+    
+    private func updateMemo(with index: Int) {
+        if memoDetailTextView.text.isEmpty {
+            return deleteMemo(with: index)
+        }
+        
+    }
+    
+    private func deleteMemo(with index: Int) {
+        do {
+            try MemoModel.shared.delete(index: index)
+            self.delegate?.deleteMemo(indexRow: index)
+        } catch {
+            self.showError(error, okHandler: nil)
         }
     }
     
@@ -124,9 +146,10 @@ class MemoDetailViewController: UIViewController {
         self.view.endEditing(true)
     }
     
-    private func displayMemo() {        
-        if let title = memo?.title,
-           let body = memo?.body {
+    private func displayMemo() {
+        if let memoIndex = index,
+           let title = MemoModel.shared.list[memoIndex].title,
+           let body = MemoModel.shared.list[memoIndex].body {
             let content = NSMutableAttributedString(string: title, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .title1)])
             content.append(NSAttributedString(string: "\n\n" + body, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .body)]))
             memoDetailTextView.attributedText = content
@@ -146,8 +169,8 @@ extension MemoDetailViewController: UITextViewDelegate {
 }
 
 extension MemoDetailViewController: MemoListSelectDelegate {
-    func memoCellSelect(_ memo: Memo?) {
-        self.memo = memo
+    func memoCellSelect(_ index: Int?) {
+        self.index = index
     }
 }
 
@@ -209,4 +232,5 @@ extension UITextView {
 
 protocol MemoDetailDelegate: class {
     func saveMemo(indexRow: Int)
+    func deleteMemo(indexRow: Int)
 }
