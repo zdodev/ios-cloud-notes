@@ -79,12 +79,34 @@ class MemoDetailViewController: UIViewController {
               title.isNotEmpty else {
             return self.deleteMemo()
         }
+        if isNotChangeMemo(with: index, title: title, body: divideMemo.body) {
+            return
+        }
         do {
             try MemoModel.shared.update(index: index, title: title, body: divideMemo.body)
             self.delegate?.updateMemo(indexRow: index)
         } catch {
             self.showError(error, okHandler: nil)
         }
+    }
+    
+    private func divideMemoString(with memo: String) -> (title: String?, body: String?) {
+        var divideMemo = memo.components(separatedBy: "\n")
+        let title = divideMemo.first
+        divideMemo.remove(at: divideMemo.startIndex)
+        let body = divideMemo.reduce("", { (result, memoBody) -> String in
+            return result + memoBody
+        })
+        return (title, body)
+    }
+    
+    private func isNotChangeMemo(with index: Int, title: String, body: String?) -> Bool {
+        guard let originalTitle = MemoModel.shared.list[index].title else {
+            return false
+        }
+        let isNotChangeTitle = originalTitle == title
+        let isNotChangeBody = MemoModel.shared.list[index].body == body
+        return isNotChangeTitle && isNotChangeBody
     }
     
     private func deleteMemo() {
@@ -98,16 +120,6 @@ class MemoDetailViewController: UIViewController {
             self.showError(error, okHandler: nil)
         }
         self.navigationController?.navigationController?.popViewController(animated: true)
-    }
-    
-    private func divideMemoString(with memo: String) -> (title: String?, body: String?) {
-        var divideMemo = memo.components(separatedBy: "\n")
-        let title = divideMemo.first
-        divideMemo.remove(at: divideMemo.startIndex)
-        let body = divideMemo.reduce("", { (result, memoBody) -> String in
-            return result + memoBody
-        })
-        return (title, body)
     }
     
     // MARK: - setup UI
