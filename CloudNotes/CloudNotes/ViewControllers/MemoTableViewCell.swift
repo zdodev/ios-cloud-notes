@@ -84,7 +84,7 @@ class MemoTableViewCell: UITableViewCell {
     // MARK: - display cell method
     func setupMemoCell(with item: Memo) {
         titleLabel.text = item.title
-//        dateLabel.text = item.dateTimeToString
+        dateLabel.text = item.dateToString()
         bodyLabel.text = item.body
     }
 }
