@@ -44,6 +44,9 @@ class MemoListTableViewController: UITableViewController {
         do {
             try MemoModel.shared.fetch()
             self.tableView.reloadData()
+            if MemoModel.shared.list.count > 0 {
+                self.delegate?.memoCellSelect(MemoModel.shared.list.startIndex)
+            }
         } catch {
             self.showError(error, okHandler: nil)
         }
