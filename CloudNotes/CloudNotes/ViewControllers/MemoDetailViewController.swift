@@ -220,6 +220,11 @@ extension MemoDetailViewController: UITextViewDelegate {
 
 extension MemoDetailViewController: MemoListSelectDelegate {
     func memoCellSelect(_ index: Int?) {
+        if let originIndex = self.index {
+            updateMemo(with: originIndex)
+        } else {
+            saveMemo()
+        }
         self.index = index
     }
 }
