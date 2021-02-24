@@ -26,25 +26,11 @@ class MemoDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        navigationController?.navigationBar.isHidden = true
         setupUI()
         setupTextView()
         setupKeyboard()
         displayMemo()
     }
-    
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-//        setupNavigationBar()
-    }
-    
-//    private func setupNavigationBar() {
-//        if traitCollection.userInterfaceIdiom == .pad && UIDevice.current.orientation.isLandscape {
-//            navigationController?.navigationBar.isHidden = false
-//        } else {
-//            navigationController?.navigationBar.isHidden = false
-//        }
-//    }
     
     // MARK: - setup UI
     private func setupUI() {
@@ -81,7 +67,6 @@ class MemoDetailViewController: UIViewController {
         }
         self.navigationItem.title = memo.title
         memoDetailTextView.text = memo.body
-//        memoDetailTextView.text = "010-2526-6047\ndkaj;djfiajidf\nhttp://www.naver.com\nwonhee010@gmail.com"
     }
 }
 
