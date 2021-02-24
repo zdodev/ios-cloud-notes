@@ -111,6 +111,15 @@ class MemoDetailViewController: UIViewController {
     }
     
     // MARK: - setup UI
+    private func setupUI() {
+        self.view.backgroundColor = .white
+        self.view.addSubview(memoDetailTextView)
+        memoDetailTextView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        memoDetailTextView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        memoDetailTextView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        memoDetailTextView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+    }
+    
     private func setupNavigationBar() {
         let barButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), style: .plain, target: self, action: #selector(showActionSheet))
         self.navigationItem.rightBarButtonItem = barButton
@@ -147,15 +156,6 @@ class MemoDetailViewController: UIViewController {
         alertController.addAction(cancelAction)
         alertController.addAction(deleteAction)
         self.present(alertController, animated: true, completion: nil)
-    }
-    
-    private func setupUI() {
-        self.view.backgroundColor = .white
-        self.view.addSubview(memoDetailTextView)
-        memoDetailTextView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-        memoDetailTextView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-        memoDetailTextView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        memoDetailTextView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
     }
     
     private func setupTextView() {
