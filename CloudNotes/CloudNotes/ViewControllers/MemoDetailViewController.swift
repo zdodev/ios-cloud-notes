@@ -35,10 +35,34 @@ class MemoDetailViewController: UIViewController {
 //        navigationController?.navigationBar.isHidden = false
         navigationItem.rightBarButtonItem = moreButton
         
+        moreButton.target = self
+        moreButton.action = #selector(moreButtonTapped)
+        
         setupUI()
         setupTextView()
         setupKeyboard()
         displayMemo()
+    }
+    
+    @objc private func moreButtonTapped(_ sender: UIBarButtonItem) {
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let shareAction = UIAlertAction(title: "Share", style: .default, handler: nil)
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { alertAction in
+            let alert = UIAlertController(title: "진짜요?", message: "정말로 삭제하시겠어요?", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+            let deleteAction = UIAlertAction(title: "삭제", style: .destructive, handler: nil)
+            alert.addAction(cancelAction)
+            alert.addAction(deleteAction)
+            self.present(alert, animated: true, completion: nil)
+            
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        alert.addAction(shareAction)
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
     }
     
 //    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
