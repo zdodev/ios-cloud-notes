@@ -36,13 +36,14 @@ class MemoModel {
         }
     }
     
-    // TODO: sort
     func fetch() throws {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             throw MemoError.fetchMemo
         }
         let context = appDelegate.persistentContainer.viewContext
         let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "Memo")
+        let sort = NSSortDescriptor(key: "lastModified", ascending: false)
+        fetchRequest.sortDescriptors = [sort]
         do {
             let result = try context.fetch(fetchRequest)
             guard let memoObjectList = result as? [Memo] else {
@@ -69,6 +70,7 @@ class MemoModel {
         }
     }
     
+    // TODO: 업데이트된 거는 앞으로
     func update(index: Int, title: String, body: String?) throws {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             throw MemoError.updateMemo
