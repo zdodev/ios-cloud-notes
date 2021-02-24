@@ -34,20 +34,22 @@ class MemoDetailViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         setupNavigationBar()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
         if let index = index {
-            // 수정
             updateMemo(with: index)
         } else {
-            // 추가
             saveMemo()
         }
     }
     
-    // MARK: - CRUD
+    // MARK: - Memo Data CRUD
     private func saveMemo() {
         if memoDetailTextView.text.isEmpty {
             return
@@ -68,7 +70,16 @@ class MemoDetailViewController: UIViewController {
         if memoDetailTextView.text.isEmpty {
             return deleteMemo()
         }
-        
+        guard let title = memoDetailTextView.text,
+              let body = memoDetailTextView.text else {
+            return
+        }
+        do {
+            try MemoModel.shared.update(index: index, title: title, body: body)
+            self.delegate?.updateMemo(indexRow: index)
+        } catch {
+            self.showError(error, okHandler: nil)
+        }
     }
     
     private func deleteMemo() {
@@ -238,4 +249,6 @@ extension UITextView {
 protocol MemoDetailDelegate: class {
     func saveMemo(indexRow: Int)
     func deleteMemo(indexRow: Int)
+    func seletUpdateMemo(indexRow: Int)
+    func updateMemo(indexRow: Int)
 }
