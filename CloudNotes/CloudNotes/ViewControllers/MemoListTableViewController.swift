@@ -24,8 +24,6 @@ class MemoListTableViewController: UITableViewController {
     }
     
     private func setupTableView() {
-        self.tableView.rowHeight = UITableView.automaticDimension
-        self.tableView.estimatedRowHeight = 70
         self.tableView.register(MemoTableViewCell.self, forCellReuseIdentifier: "memoCell")
     }
 
@@ -67,7 +65,7 @@ extension MemoListTableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+        return 80
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
