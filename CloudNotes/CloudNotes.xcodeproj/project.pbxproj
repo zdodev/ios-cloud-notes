@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		28046DD025DBB54500E127FF /* Memo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28046DCF25DBB54500E127FF /* Memo.swift */; };
 		28046DD625DBB9A600E127FF /* MemoError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28046DD525DBB9A600E127FF /* MemoError.swift */; };
 		28046DE225DBBAF200E127FF /* ViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28046DE125DBBAF200E127FF /* ViewControllerExtension.swift */; };
 		283FA8AB25DE570700902F3A /* MemoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283FA8AA25DE570700902F3A /* MemoDetailViewController.swift */; };
@@ -47,7 +46,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		28046DCF25DBB54500E127FF /* Memo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memo.swift; sourceTree = "<group>"; };
 		28046DD525DBB9A600E127FF /* MemoError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoError.swift; sourceTree = "<group>"; };
 		28046DE125DBBAF200E127FF /* ViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerExtension.swift; sourceTree = "<group>"; };
 		283FA8AA25DE570700902F3A /* MemoDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoDetailViewController.swift; sourceTree = "<group>"; };
@@ -103,7 +101,6 @@
 		28046DCE25DBB53400E127FF /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				28046DCF25DBB54500E127FF /* Memo.swift */,
 				28F0B7E925DF99A600916219 /* MemoModel.swift */,
 			);
 			path = Model;
@@ -336,7 +333,6 @@
 				28F0B7D425DF95DD00916219 /* MainSplitViewController.swift in Sources */,
 				C7481C7025BBCF3900B9CA55 /* SceneDelegate.swift in Sources */,
 				28046DE225DBBAF200E127FF /* ViewControllerExtension.swift in Sources */,
-				28046DD025DBB54500E127FF /* Memo.swift in Sources */,
 				283FA8B825DE650C00902F3A /* UITextViewExtension.swift in Sources */,
 				C7481C7825BBCF3900B9CA55 /* CloudNotes.xcdatamodeld in Sources */,
 				2855E86725E65CD700DB4F7D /* Memo+CoreDataClass.swift in Sources */,
