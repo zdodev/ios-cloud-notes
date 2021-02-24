@@ -47,6 +47,7 @@ class MemoDetailViewController: UIViewController {
         }
     }
     
+    // MARK: - CRUD
     private func saveMemo() {
         if memoDetailTextView.text.isEmpty {
             return
@@ -65,18 +66,22 @@ class MemoDetailViewController: UIViewController {
     
     private func updateMemo(with index: Int) {
         if memoDetailTextView.text.isEmpty {
-            return deleteMemo(with: index)
+            return deleteMemo()
         }
         
     }
     
-    private func deleteMemo(with index: Int) {
+    private func deleteMemo() {
+        guard let index = index else {
+            return self.showError(MemoError.deleteMemo, okHandler: nil)
+        }
         do {
             try MemoModel.shared.delete(index: index)
             self.delegate?.deleteMemo(indexRow: index)
         } catch {
             self.showError(error, okHandler: nil)
         }
+        self.navigationController?.navigationController?.popViewController(animated: true)
     }
     
     // MARK: - setup UI
@@ -111,7 +116,7 @@ class MemoDetailViewController: UIViewController {
         let alertController = UIAlertController(title: "진짜요?", message: "정말로 삭제하시겠어요?", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
         let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
-            print("삭제할꼬야")
+            self.deleteMemo()
         }
         alertController.addAction(cancelAction)
         alertController.addAction(deleteAction)
