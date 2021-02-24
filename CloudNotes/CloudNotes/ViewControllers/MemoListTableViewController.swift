@@ -69,10 +69,19 @@ extension MemoListTableViewController {
     
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: "삭제") { (_, _, _) in
-            print("delete")
+            self.deleteMemoObject(with: indexPath.row)
         }
         
         return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
+    
+    private func deleteMemoObject(with index: Int) {
+        do {
+            try MemoModel.shared.delete(index: index)
+            self.deleteMemo(indexRow: index)
+        } catch {
+            self.showError(error, okHandler: nil)
+        }
     }
 }
 
