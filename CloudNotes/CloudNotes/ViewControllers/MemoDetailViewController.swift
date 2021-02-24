@@ -58,15 +58,7 @@ class MemoDetailViewController: UIViewController {
     
     private func setupTextView() {
         memoDetailTextView.delegate = self
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tapTextView(_:)))
-        memoDetailTextView.addGestureRecognizer(tapGesture)
         memoDetailTextView.setTextViewAllDataDetectorTypes()
-    }
-    
-    @objc private func tapTextView(_ gesture: UITapGestureRecognizer) {
-        memoDetailTextView.isEditable = true
-        memoDetailTextView.dataDetectorTypes = []
-        memoDetailTextView.becomeFirstResponder()
     }
     
     private func setupKeyboard() {
@@ -88,22 +80,77 @@ class MemoDetailViewController: UIViewController {
             return
         }
         self.navigationItem.title = memo.title
-        memoDetailTextView.text = memo.body
-        
+//        memoDetailTextView.text = memo.body
+        memoDetailTextView.text = "010-2526-6047\ndkaj;djfiajidf\nhttp://www.naver.com\nwonhee010@gmail.com"
     }
 }
 
 // MARK: - TextView Delegate
 extension MemoDetailViewController: UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
-        textView.setTextViewAllDataDetectorTypes()
+        textView.isEditable = false
+        textView.dataDetectorTypes = .all
+        textView.resignFirstResponder()
     }
 }
 
 extension MemoDetailViewController: MemoListSelectDelegate {
     func memoCellSelect(_ memo: MemoModel) {
         self.memo = memo
+    }
+}
 
-        memoDetailTextView.setContentOffset(.zero, animated: true)
+extension UITextView {
+    open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print("touches")
+        let touch = touches.first!
+        var location = touch.location(in: self)
+        
+        let layoutManager = self.layoutManager
+        location.x -= self.textContainerInset.left
+        location.y -= self.textContainerInset.top
+        
+        let glyphIndex: Int = self.layoutManager.glyphIndex(for: location, in: self.textContainer, fractionOfDistanceThroughGlyph: nil)
+        let glyphRect = layoutManager.boundingRect(forGlyphRange: NSRange(location: glyphIndex, length: 1), in: self.textContainer)
+        
+        if glyphRect.contains(location) {
+            let characterIndex: Int = layoutManager.characterIndexForGlyph(at: glyphIndex)
+            let attributeName = NSAttributedString.Key.link
+            let attributeValue = self.textStorage.attribute(attributeName, at: characterIndex, effectiveRange: nil)
+            if let url = attributeValue as? URL {
+                if UIApplication.shared.canOpenURL(url) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                } else {
+                    print("There is a problem in your link.")
+                }
+            } else {
+                // place the cursor to tap position
+                placeCursor(self, location)
+                        
+                // back to normal state
+                self.changeTextViewToNormalState()
+            }
+        } else {
+            changeTextViewToNormalState()
+        }
+    }
+    
+    fileprivate func placeCursor(_ myTextView: UITextView, _ location: CGPoint) {
+        // place the cursor on tap position
+        if let tapPosition = myTextView.closestPosition(to: location) {
+            let uiTextRange = myTextView.textRange(from: tapPosition, to: tapPosition)
+                
+            if let start = uiTextRange?.start, let end = uiTextRange?.end {
+                let loc = myTextView.offset(from: myTextView.beginningOfDocument, to: tapPosition)
+                let length = myTextView.offset(from: start, to: end)
+                myTextView.selectedRange = NSMakeRange(loc, length)
+            }
+        }
+    }
+    
+    fileprivate func changeTextViewToNormalState() {
+        self.isEditable = true
+        self.dataDetectorTypes = []
+        self.becomeFirstResponder()
     }
 }
