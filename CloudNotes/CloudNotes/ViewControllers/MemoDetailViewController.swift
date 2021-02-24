@@ -7,6 +7,7 @@
 
 import UIKit
 
+// TODO: scroll keyboard
 class MemoDetailViewController: UIViewController {
     // MARK: - UI property
     private lazy var memoDetailTextView: UITextView = {
@@ -17,23 +18,108 @@ class MemoDetailViewController: UIViewController {
     }()
     
     // MARK: - data property
-    private var memo: MemoModel? {
+    private var index: Int? {
         didSet {
             displayMemo()
         }
     }
+    weak var delegate: MemoDetailDelegate? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupNavigationBar()
         setupUI()
         setupTextView()
         setupKeyboard()
         displayMemo()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        setupNavigationBar()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        if let index = index {
+            updateMemo(with: index)
+        } else {
+            saveMemo()
+        }
+    }
+    
+    // MARK: - Memo Data CRUD
+    private func saveMemo() {
+        if memoDetailTextView.text.isEmpty {
+            return
+        }
+        guard let memoString = memoDetailTextView.text else {
+            return self.showError(MemoError.saveMemo, okHandler: nil)
+        }
+        let divideMemo = divideMemoString(with: memoString)
+        guard let title = divideMemo.title else {
+            return
+        }
+        do {
+            try MemoModel.shared.save(title: title, body: divideMemo.body)
+            self.delegate?.saveMemo(indexRow: MemoModel.shared.list.count - 1)
+        } catch {
+            self.showError(error, okHandler: nil)
+        }
+    }
+    
+    private func updateMemo(with index: Int) {
+        guard let memoString = memoDetailTextView.text else {
+            return self.showError(MemoError.updateMemo, okHandler: nil)
+        }
+        let divideMemo = divideMemoString(with: memoString)
+        guard let title = divideMemo.title,
+              title.isNotEmpty else {
+            return self.deleteMemo()
+        }
+        do {
+            try MemoModel.shared.update(index: index, title: title, body: divideMemo.body)
+            self.delegate?.updateMemo(indexRow: index)
+        } catch {
+            self.showError(error, okHandler: nil)
+        }
+    }
+    
+    private func deleteMemo() {
+        guard let index = index else {
+            return self.showError(MemoError.deleteMemo, okHandler: nil)
+        }
+        do {
+            try MemoModel.shared.delete(index: index)
+            self.delegate?.deleteMemo(indexRow: index)
+        } catch {
+            self.showError(error, okHandler: nil)
+        }
+        self.navigationController?.navigationController?.popViewController(animated: true)
+    }
+    
+    private func divideMemoString(with memo: String) -> (title: String?, body: String?) {
+        var divideMemo = memo.components(separatedBy: "\n")
+        let title = divideMemo.first
+        divideMemo.remove(at: divideMemo.startIndex)
+        let body = divideMemo.reduce("", { (result, memoBody) -> String in
+            return result + memoBody
+        })
+        return (title, body)
+    }
+    
     // MARK: - setup UI
+    private func setupUI() {
+        self.view.backgroundColor = .white
+        self.view.addSubview(memoDetailTextView)
+        memoDetailTextView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        memoDetailTextView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
+        memoDetailTextView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        memoDetailTextView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+    }
+    
     private func setupNavigationBar() {
         let barButton = UIBarButtonItem(image: UIImage(systemName: "ellipsis.circle"), style: .plain, target: self, action: #selector(showActionSheet))
         self.navigationItem.rightBarButtonItem = barButton
@@ -65,20 +151,11 @@ class MemoDetailViewController: UIViewController {
         let alertController = UIAlertController(title: "진짜요?", message: "정말로 삭제하시겠어요?", preferredStyle: .alert)
         let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
         let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
-            print("삭제할꼬야")
+            self.deleteMemo()
         }
         alertController.addAction(cancelAction)
         alertController.addAction(deleteAction)
         self.present(alertController, animated: true, completion: nil)
-    }
-    
-    private func setupUI() {
-        self.view.backgroundColor = .white
-        self.view.addSubview(memoDetailTextView)
-        memoDetailTextView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-        memoDetailTextView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-        memoDetailTextView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        memoDetailTextView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor).isActive = true
     }
     
     private func setupTextView() {
@@ -101,13 +178,15 @@ class MemoDetailViewController: UIViewController {
     }
     
     private func displayMemo() {
-        guard let memo = memo else {
-            return
+        if let memoIndex = index,
+           let title = MemoModel.shared.list[memoIndex].title,
+           let body = MemoModel.shared.list[memoIndex].body {
+            let content = NSMutableAttributedString(string: title, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .title1)])
+            content.append(NSAttributedString(string: "\n\n" + body, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .body)]))
+            memoDetailTextView.attributedText = content
+        } else {
+            memoDetailTextView.text = nil
         }
-        
-        let content = NSMutableAttributedString(string: memo.title, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .title1)])
-        content.append(NSAttributedString(string: "\n\n" + memo.body, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .body)]))
-        memoDetailTextView.attributedText = content
     }
 }
 
@@ -121,8 +200,8 @@ extension MemoDetailViewController: UITextViewDelegate {
 }
 
 extension MemoDetailViewController: MemoListSelectDelegate {
-    func memoCellSelect(_ memo: MemoModel) {
-        self.memo = memo
+    func memoCellSelect(_ index: Int?) {
+        self.index = index
     }
 }
 
@@ -180,4 +259,11 @@ extension UITextView {
         self.dataDetectorTypes = []
         self.becomeFirstResponder()
     }
+}
+
+protocol MemoDetailDelegate: class {
+    func saveMemo(indexRow: Int)
+    func deleteMemo(indexRow: Int)
+    func selectUpdateMemo(indexRow: Int)
+    func updateMemo(indexRow: Int)
 }
