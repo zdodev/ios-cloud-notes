@@ -70,7 +70,6 @@ class MemoModel {
         }
     }
     
-    // TODO: 업데이트된 거는 앞으로
     func update(index: Int, title: String, body: String?) throws {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             throw MemoError.updateMemo
