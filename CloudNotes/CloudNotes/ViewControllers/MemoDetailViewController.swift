@@ -140,7 +140,7 @@ class MemoDetailViewController: UIViewController {
     @objc func showActionSheet(_ sender: UIBarButtonItem) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let shareSheet = UIAlertAction(title: "Share...", style: .default) { _ in
-            print("click to share sheet")
+            self.showShareActivityView()
         }
         let deleteSheet = UIAlertAction(title: "Delete...", style: .destructive) { _ in
             self.showDeleteMemoAlert()
@@ -157,6 +157,13 @@ class MemoDetailViewController: UIViewController {
             actionSheet.popoverPresentationController?.barButtonItem = sender
             self.present(actionSheet, animated: true, completion: nil)
         }
+    }
+    
+    private func showShareActivityView() {
+        let objectToShare = memoDetailTextView.text
+        let activityViewController = UIActivityViewController(activityItems: [objectToShare], applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = self.view
+        self.present(activityViewController, animated: true, completion: nil)
     }
     
     private func showDeleteMemoAlert() {
