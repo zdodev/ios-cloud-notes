@@ -70,6 +70,10 @@ extension MemoListTableViewController {
         return UITableView.automaticDimension
     }
     
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
     // MARK: - Table view delegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -104,7 +108,7 @@ extension MemoListTableViewController: MemoDetailDelegate {
         self.tableView.deleteRows(at: [IndexPath(row: indexRow, section: 0)], with: .automatic)
     }
     
-    func seletUpdateMemo(indexRow: Int) {
+    func selectUpdateMemo(indexRow: Int) {
         
     }
     

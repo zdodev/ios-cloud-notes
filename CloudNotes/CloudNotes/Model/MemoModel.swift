@@ -14,7 +14,7 @@ class MemoModel {
     
     var list: [Memo] = []
     
-    func save(title: String, body: String) throws {
+    func save(title: String, body: String?) throws {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             throw MemoError.saveMemo
         }
@@ -69,7 +69,7 @@ class MemoModel {
         }
     }
     
-    func update(index: Int, title: String, body: String) throws {
+    func update(index: Int, title: String, body: String?) throws {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             throw MemoError.updateMemo
         }
@@ -78,6 +78,7 @@ class MemoModel {
         object.setValue(title, forKey: "title")
         object.setValue(body, forKey: "body")
         object.setValue(Date(), forKey: "lastModified")
+        list[index] = object
         
         do {
             try context.save()

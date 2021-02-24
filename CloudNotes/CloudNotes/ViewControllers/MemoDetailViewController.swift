@@ -54,12 +54,15 @@ class MemoDetailViewController: UIViewController {
         if memoDetailTextView.text.isEmpty {
             return
         }
-        guard let title = memoDetailTextView.text,
-              let body = memoDetailTextView.text else {
+        guard let memoString = memoDetailTextView.text else {
+            return self.showError(MemoError.saveMemo, okHandler: nil)
+        }
+        let divideMemo = divideMemoString(with: memoString)
+        guard let title = divideMemo.title else {
             return
         }
         do {
-            try MemoModel.shared.save(title: title, body: body)
+            try MemoModel.shared.save(title: title, body: divideMemo.body)
             self.delegate?.saveMemo(indexRow: MemoModel.shared.list.count - 1)
         } catch {
             self.showError(error, okHandler: nil)
@@ -67,19 +70,29 @@ class MemoDetailViewController: UIViewController {
     }
     
     private func updateMemo(with index: Int) {
-        if memoDetailTextView.text.isEmpty {
-            return deleteMemo()
+        guard let memoString = memoDetailTextView.text else {
+            return self.showError(MemoError.updateMemo, okHandler: nil)
         }
-        guard let title = memoDetailTextView.text,
-              let body = memoDetailTextView.text else {
-            return
+        let divideMemo = divideMemoString(with: memoString)
+        guard let title = divideMemo.title else {
+            return self.deleteMemo()
         }
         do {
-            try MemoModel.shared.update(index: index, title: title, body: body)
+            try MemoModel.shared.update(index: index, title: title, body: divideMemo.body)
             self.delegate?.updateMemo(indexRow: index)
         } catch {
             self.showError(error, okHandler: nil)
         }
+    }
+    
+    private func divideMemoString(with memo: String) -> (title: String?, body: String?) {
+        var divideMemo = memo.components(separatedBy: "\n")
+        let title = divideMemo.first
+        divideMemo.remove(at: divideMemo.startIndex)
+        let body = divideMemo.reduce("", { (result, memoBody) -> String in
+            return result + memoBody
+        })
+        return (title, body)
     }
     
     private func deleteMemo() {
@@ -249,6 +262,6 @@ extension UITextView {
 protocol MemoDetailDelegate: class {
     func saveMemo(indexRow: Int)
     func deleteMemo(indexRow: Int)
-    func seletUpdateMemo(indexRow: Int)
+    func selectUpdateMemo(indexRow: Int)
     func updateMemo(indexRow: Int)
 }
