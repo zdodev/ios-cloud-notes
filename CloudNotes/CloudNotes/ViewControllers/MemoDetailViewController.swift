@@ -276,6 +276,5 @@ extension UITextView {
 protocol MemoDetailDelegate: class {
     func saveMemo(indexRow: Int)
     func deleteMemo(indexRow: Int)
-    func selectUpdateMemo(indexRow: Int)
     func updateMemo(indexRow: Int)
 }

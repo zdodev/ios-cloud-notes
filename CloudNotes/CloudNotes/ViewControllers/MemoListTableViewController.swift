@@ -108,10 +108,6 @@ extension MemoListTableViewController: MemoDetailDelegate {
         self.tableView.deleteRows(at: [IndexPath(row: indexRow, section: 0)], with: .automatic)
     }
     
-    func selectUpdateMemo(indexRow: Int) {
-        
-    }
-    
     func updateMemo(indexRow: Int) {
         self.tableView.reloadRows(at: [IndexPath(row: indexRow, section: 0)], with: .automatic)
     }
