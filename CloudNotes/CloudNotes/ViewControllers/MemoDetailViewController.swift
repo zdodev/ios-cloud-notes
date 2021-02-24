@@ -17,6 +17,7 @@ class MemoDetailViewController: UIViewController {
     }()
     
     // MARK: - data property
+    
     private var memo: Memo? {
         didSet {
             displayMemo()
@@ -51,7 +52,7 @@ class MemoDetailViewController: UIViewController {
             // 수정
         } else {
             // 추가
-            let result = MemoModel.shared.save(title: title, body: body)
+            let result = try? MemoModel.shared.save(title: title, body: body)
             self.delegate?.saveMemo(indexRow: MemoModel.shared.list.count - 1)
         }
     }
