@@ -36,7 +36,7 @@ class MemoDetailViewController: UIViewController {
         navigationItem.rightBarButtonItem = moreButton
         
         moreButton.target = self
-        moreButton.action = #selector(TappedmoreButton)
+        moreButton.action = #selector(tappedMoreButton)
         
         setupUI()
         setupTextView()
@@ -44,7 +44,7 @@ class MemoDetailViewController: UIViewController {
         displayMemo()
     }
     
-    @objc private func TappedmoreButton(_ sender: UIBarButtonItem) {
+    @objc private func tappedMoreButton(_ sender: UIBarButtonItem) {
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let shareAction = UIAlertAction(title: "Share", style: .default, handler: nil)
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { alertAction in
