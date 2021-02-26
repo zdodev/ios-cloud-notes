@@ -26,9 +26,7 @@ class MemoDetailViewController: UIViewController {
     
     private let backButton: UIBarButtonItem = {
         let barButtonItem = UIBarButtonItem()
-//        barButtonItem.image = UIImage(systemName: "ellipsis.circle")
-//        barButtonItem.title = "ee"
-//        barButtonSystemItem =
+        barButtonItem.image = UIImage(systemName: "chevron.backward.circle")
         return barButtonItem
     }()
     
@@ -45,12 +43,11 @@ class MemoDetailViewController: UIViewController {
 //        navigationController?.navigationBar.isHidden = false
         navigationItem.rightBarButtonItem = moreButton
         navigationItem.leftBarButtonItem = backButton
-//        navigationItem.backBarButtonItem = backButton
         
-        let backBarButtton = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        navigationItem.leftItemsSupplementBackButton = true
         moreButton.target = self
         moreButton.action = #selector(tappedMoreButton)
+        backButton.target = self
+        backButton.action = #selector(tappedBackButton)
         
         setupUI()
         setupTextView()
@@ -58,11 +55,16 @@ class MemoDetailViewController: UIViewController {
         displayMemo()
     }
     
+    @objc private func tappedBackButton(_ sender: UIBarButtonItem) {
+        if let memoIndex = memo?.index {
+            let memoToUpdate = Memo.shared.list[Int(memoIndex)]
+            memoToUpdate.body = memoDetailTextView.text
+            context.saveContext()
+        }
+        navigationController?.navigationController?.popViewController(animated: true)
+    }
+    
     @objc private func tappedMoreButton(_ sender: UIBarButtonItem) {
-        print(navigationController?.navigationItem.leftBarButtonItem)
-        print(navigationItem.leftBarButtonItem)
-        print(navigationItem.leftBarButtonItems)
-        print(navigationItem.backBarButtonItem)
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let shareAction = UIAlertAction(title: "Share", style: .default, handler: nil)
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { alertAction in
