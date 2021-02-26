@@ -27,7 +27,6 @@ class MemoListTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         fetchItems()
-//        print("true")
     }
     
     private func fetchItems() {
@@ -52,8 +51,10 @@ class MemoListTableViewController: UITableViewController {
     
     // TODO: add method logic
     @objc func addMemo() {
-        let memoInsertView = MemoInsertViewController()
-        navigationController?.pushViewController(memoInsertView, animated: true)
+//        let memoInsertView = MemoInsertViewController()
+//        navigationController?.pushViewController(memoInsertView, animated: true)
+        let memoInsertViewController = MemoInsertViewController()
+        splitViewController?.showDetailViewController(UINavigationController(rootViewController: memoInsertViewController), sender: nil)
     }
 }
 

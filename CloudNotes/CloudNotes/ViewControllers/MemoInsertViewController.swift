@@ -32,7 +32,11 @@ class MemoInsertViewController: UIViewController {
         newMemo.body = memoTextView.text
         newMemo.lastModified = Date.timeIntervalSinceReferenceDate
         context.saveContext()
-        navigationController?.popViewController(animated: true)
+        if traitCollection.horizontalSizeClass == .compact {
+            navigationController?.navigationController?.popViewController(animated: true)
+        } else {
+            
+        }
     }
     
     private func extractTitle(_ textView: UITextView) -> String {
