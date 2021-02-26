@@ -9,7 +9,8 @@ import UIKit
 
 class MemoListTableViewController: UITableViewController {
     weak var delegate: MemoListSelectDelegate?
-
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -21,6 +22,21 @@ class MemoListTableViewController: UITableViewController {
 //        } catch {
             // TODO: add Handling error
 //        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchItems()
+//        print("true")
+    }
+    
+    private func fetchItems() {
+        do {
+            Memo.shared.list = try context.fetch(MemoModel.fetchRequest())
+            tableView.reloadData()
+        } catch let error as NSError {
+            print("Error: \(error), \(error.userInfo)")
+        }
     }
     
     private func setupNavigationBar() {
@@ -51,7 +67,7 @@ extension MemoListTableViewController {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "memoCell") as? MemoTableViewCell else {
             return UITableViewCell()
         }
-//        cell.setupMemoCell(with: Memo.shared.list[indexPath.row])
+        cell.setupMemoCell(with: Memo.shared.list[indexPath.row])
         return cell
     }
     
@@ -63,13 +79,14 @@ extension MemoListTableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-//        delegate?.memoCellSelect(Memo.shared.list[indexPath.row])
+        delegate?.memoCellSelect(Memo.shared.list[indexPath.row])
         if let memoDetailViewController = delegate as? MemoDetailViewController {
+            Memo.shared.list[indexPath.row].setupIndex(Int64(indexPath.row))
             splitViewController?.showDetailViewController(UINavigationController(rootViewController: memoDetailViewController), sender: nil)
         }
     }
 }
 
 protocol MemoListSelectDelegate: class {
-//    func memoCellSelect(_ memo: MemoModel)
+    func memoCellSelect(_ memo: MemoModel)
 }

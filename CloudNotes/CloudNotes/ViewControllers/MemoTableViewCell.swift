@@ -82,9 +82,15 @@ class MemoTableViewCell: UITableViewCell {
     }
     
     // MARK: - display cell method
-//    func setupMemoCell(with item: MemoModel) {
-//        titleLabel.text = item.title
-//        dateLabel.text = item.dateTimeToString
-//        bodyLabel.text = item.body
-//    }
+    func setupMemoCell(with item: MemoModel) {
+        titleLabel.text = item.title
+        dateLabel.text = item.dateTimeToString
+        
+        var summary = ""
+        if let titleEndIndex = item.body?.firstIndex(of: "\n"), let summaryStartIndex = item.body?.index(after: titleEndIndex) {
+            summary = String(item.body?[summaryStartIndex...] ?? "")
+        }
+        
+        bodyLabel.text = summary
+    }
 }

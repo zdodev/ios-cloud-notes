@@ -31,8 +31,7 @@ class MemoInsertViewController: UIViewController {
         newMemo.title = extractTitle(memoTextView)
         newMemo.body = memoTextView.text
         newMemo.lastModified = Date.timeIntervalSinceReferenceDate
-        print(Memo.shared.list)
-//        context.saveContext()
+        context.saveContext()
         navigationController?.popViewController(animated: true)
     }
     

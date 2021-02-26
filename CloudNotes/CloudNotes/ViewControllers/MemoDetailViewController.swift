@@ -8,6 +8,8 @@
 import UIKit
 
 class MemoDetailViewController: UIViewController {
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
     // MARK: - UI property
     private lazy var memoDetailTextView: UITextView = {
         let textView = UITextView()
@@ -22,19 +24,31 @@ class MemoDetailViewController: UIViewController {
         return barButtonItem
     }()
     
+    private let backButton: UIBarButtonItem = {
+        let barButtonItem = UIBarButtonItem()
+//        barButtonItem.image = UIImage(systemName: "ellipsis.circle")
+//        barButtonItem.title = "ee"
+//        barButtonSystemItem =
+        return barButtonItem
+    }()
+    
     // MARK: - data property
-//    private var memo: MemoModel? {
-//        didSet {
-//            displayMemo()
-//        }
-//    }
+    private var memo: MemoModel? {
+        didSet {
+            displayMemo()
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
 //        navigationController?.navigationBar.isHidden = false
         navigationItem.rightBarButtonItem = moreButton
+        navigationItem.leftBarButtonItem = backButton
+//        navigationItem.backBarButtonItem = backButton
         
+        let backBarButtton = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.leftItemsSupplementBackButton = true
         moreButton.target = self
         moreButton.action = #selector(tappedMoreButton)
         
@@ -45,16 +59,27 @@ class MemoDetailViewController: UIViewController {
     }
     
     @objc private func tappedMoreButton(_ sender: UIBarButtonItem) {
+        print(navigationController?.navigationItem.leftBarButtonItem)
+        print(navigationItem.leftBarButtonItem)
+        print(navigationItem.leftBarButtonItems)
+        print(navigationItem.backBarButtonItem)
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let shareAction = UIAlertAction(title: "Share", style: .default, handler: nil)
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { alertAction in
             let alert = UIAlertController(title: "진짜요?", message: "정말로 삭제하시겠어요?", preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-            let deleteAction = UIAlertAction(title: "삭제", style: .destructive, handler: nil)
+            let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { alertAction in
+                // 삭제
+                if let memoIndex = self.memo?.index {
+                    let memoToRemove = Memo.shared.list[Int(memoIndex)]
+                    self.context.delete(memoToRemove)
+                    self.context.saveContext()
+                    self.navigationController?.navigationController?.popViewController(animated: true)
+                }
+            }
             alert.addAction(cancelAction)
             alert.addAction(deleteAction)
             self.present(alert, animated: true, completion: nil)
-            
         }
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         
@@ -116,12 +141,11 @@ class MemoDetailViewController: UIViewController {
     }
     
     private func displayMemo() {
-//        guard let memo = memo else {
-//            return
-//        }
-//        self.navigationItem.title = memo.title
-//        memoDetailTextView.text = memo.body
-        
+        guard let memo = memo else {
+            return
+        }
+        self.navigationItem.title = memo.title
+        memoDetailTextView.text = memo.body
     }
 }
 
@@ -133,7 +157,7 @@ extension MemoDetailViewController: UITextViewDelegate {
 }
 
 extension MemoDetailViewController: MemoListSelectDelegate {
-//    func memoCellSelect(_ memo: MemoModel) {
-//        self.memo = memo
-//    }
+    func memoCellSelect(_ memo: MemoModel) {
+        self.memo = memo
+    }
 }
