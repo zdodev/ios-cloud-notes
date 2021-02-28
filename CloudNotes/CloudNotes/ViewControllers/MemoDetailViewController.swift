@@ -227,6 +227,10 @@ extension MemoDetailViewController: MemoListSelectDelegate {
         }
         self.index = index
     }
+    
+    func addMemo() {
+        
+    }
 }
 
 // TODO: refactor
