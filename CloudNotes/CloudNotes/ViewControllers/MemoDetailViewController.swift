@@ -77,6 +77,11 @@ class MemoDetailViewController: UIViewController {
                     self.context.delete(memoToRemove)
                     self.context.saveContext()
                     self.navigationController?.navigationController?.popViewController(animated: true)
+                    if let splitViewController = self.parent?.parent as? MainSplitVieWController {
+                        if let listViewController = splitViewController.viewControllers[0].children[0] as? MemoListTableViewController {
+                            listViewController.fetchItems()
+                        }
+                    }
                 }
             }
             alert.addAction(cancelAction)
