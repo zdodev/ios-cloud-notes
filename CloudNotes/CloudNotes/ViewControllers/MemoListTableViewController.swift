@@ -27,9 +27,19 @@ class MemoListTableViewController: UITableViewController {
         self.tableView.register(MemoTableViewCell.self, forCellReuseIdentifier: "memoCell")
     }
 
-    // 메모 추가 버튼 클릭
     @objc func addMemo() {
-        // 빈 메모 생성
+        /*
+         * 가로 모드에서 메모 추가 버튼 클릭시
+         * textView가 비어 있는지 확인 필요
+         * 비어 있지 않다면 기존의 메모를 update한 후 빈 메모 추가
+         * 비어 있따면 빈 메모 추가
+         */
+        guard let delegate = self.delegate else {
+            return
+        }
+        if delegate.checkNotEmptyTextView() {
+            delegate.memoUpdate()
+        }
         saveMemo()
     }
     
@@ -143,4 +153,6 @@ extension MemoListTableViewController: MemoDetailDelegate {
 protocol MemoListSelectDelegate: class {
     func memoCellSelect(_ index: Int?)
     func memoCellDelete(_ index: Int)
+    func checkNotEmptyTextView() -> Bool
+    func memoUpdate()
 }

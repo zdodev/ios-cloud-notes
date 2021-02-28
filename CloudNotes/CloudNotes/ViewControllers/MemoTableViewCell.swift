@@ -61,7 +61,7 @@ class MemoTableViewCell: UITableViewCell {
     
     private func setupDateLabel() {
         self.contentView.addSubview(dateLabel)
-        dateLabel.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        dateLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
         dateLabel.topAnchor.constraint(equalTo: self.titleLabel.bottomAnchor, constant: 5).isActive = true
         dateLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 20).isActive = true
         dateLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -10).isActive = true

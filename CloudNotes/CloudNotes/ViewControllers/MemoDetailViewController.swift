@@ -40,14 +40,13 @@ class MemoDetailViewController: UIViewController {
         setupNavigationBar()
     }
     
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//
-//        if let index = index {
-//            updateMemo(with: index)
-//        } else {
-//        }
-//    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        if let index = index {
+            updateMemo(with: index)
+        }
+    }
     
     // MARK: - Memo Data CRUD
     private func updateMemo(with index: Int) {
@@ -224,37 +223,40 @@ extension MemoDetailViewController: MemoListSelectDelegate {
             self.index = MemoModel.shared.list.startIndex
         }
     }
+    
+    func checkNotEmptyTextView() -> Bool {
+        return memoDetailTextView.text.isNotEmpty
+    }
+    
+    func memoUpdate() {
+        guard let originIndex = self.index else {
+            return
+        }
+        self.updateMemo(with: originIndex)
+    }
 }
 
-// TODO: refactor
 extension UITextView {
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("touches")
-        let touch = touches.first!
+        guard let touch = touches.first else {
+            return
+        }
         var location = touch.location(in: self)
-        
-        let layoutManager = self.layoutManager
         location.x -= self.textContainerInset.left
         location.y -= self.textContainerInset.top
         
-        let glyphIndex: Int = self.layoutManager.glyphIndex(for: location, in: self.textContainer, fractionOfDistanceThroughGlyph: nil)
-        let glyphRect = layoutManager.boundingRect(forGlyphRange: NSRange(location: glyphIndex, length: 1), in: self.textContainer)
-        
+        let glyphIndex = self.layoutManager.glyphIndex(for: location, in: self.textContainer, fractionOfDistanceThroughGlyph: nil)
+        let glyphRect = self.layoutManager.boundingRect(forGlyphRange: NSRange(location: glyphIndex, length: 1), in: self.textContainer)
+
         if glyphRect.contains(location) {
-            let characterIndex: Int = layoutManager.characterIndexForGlyph(at: glyphIndex)
+            let characterIndex: Int = self.layoutManager.characterIndexForGlyph(at: glyphIndex)
             let attributeName = NSAttributedString.Key.link
             let attributeValue = self.textStorage.attribute(attributeName, at: characterIndex, effectiveRange: nil)
-            if let url = attributeValue as? URL {
-                if UIApplication.shared.canOpenURL(url) {
-                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                } else {
-                    print("There is a problem in your link.")
-                }
+            if let url = attributeValue as? URL,
+               UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
             } else {
-                // place the cursor to tap position
                 placeCursor(self, location)
-                        
-                // back to normal state
                 self.changeTextViewToNormalState()
             }
         } else {
@@ -262,20 +264,16 @@ extension UITextView {
         }
     }
     
-    fileprivate func placeCursor(_ myTextView: UITextView, _ location: CGPoint) {
-        // place the cursor on tap position
-        if let tapPosition = myTextView.closestPosition(to: location) {
-            let uiTextRange = myTextView.textRange(from: tapPosition, to: tapPosition)
-                
-            if let start = uiTextRange?.start, let end = uiTextRange?.end {
-                let loc = myTextView.offset(from: myTextView.beginningOfDocument, to: tapPosition)
-                let length = myTextView.offset(from: start, to: end)
-                myTextView.selectedRange = NSMakeRange(loc, length)
-            }
+    private func placeCursor(_ textView: UITextView, _ location: CGPoint) {
+        if let tapPosition = textView.closestPosition(to: location),
+           let textRange = textView.textRange(from: tapPosition, to: tapPosition) {
+            let textViewOffset = textView.offset(from: textView.beginningOfDocument, to: tapPosition)
+            let length = textView.offset(from: textRange.start, to: textRange.end)
+            textView.selectedRange = NSMakeRange(textViewOffset, length)
         }
     }
     
-    fileprivate func changeTextViewToNormalState() {
+    private func changeTextViewToNormalState() {
         self.isEditable = true
         self.dataDetectorTypes = []
         self.becomeFirstResponder()
