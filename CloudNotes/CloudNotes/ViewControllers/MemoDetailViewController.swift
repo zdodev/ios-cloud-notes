@@ -18,7 +18,7 @@ class MemoDetailViewController: UIViewController {
     }()
     
     // MARK: - data property
-    private var index: Int? {
+    var index: Int? {
         didSet {
             displayMemo()
         }
@@ -40,36 +40,16 @@ class MemoDetailViewController: UIViewController {
         setupNavigationBar()
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        if let index = index {
-            updateMemo(with: index)
-        } else {
-            saveMemo()
-        }
-    }
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//
+//        if let index = index {
+//            updateMemo(with: index)
+//        } else {
+//        }
+//    }
     
     // MARK: - Memo Data CRUD
-    private func saveMemo() {
-        if memoDetailTextView.text.isEmpty {
-            return
-        }
-        guard let memoString = memoDetailTextView.text else {
-            return self.showError(MemoError.saveMemo, okHandler: nil)
-        }
-        let divideMemo = divideMemoString(with: memoString)
-        guard let title = divideMemo.title else {
-            return
-        }
-        do {
-            try MemoModel.shared.save(title: title, body: divideMemo.body)
-            self.delegate?.saveMemo(indexRow: MemoModel.shared.list.count - 1)
-        } catch {
-            self.showError(error, okHandler: nil)
-        }
-    }
-    
     private func updateMemo(with index: Int) {
         guard let memoString = memoDetailTextView.text else {
             return self.showError(MemoError.updateMemo, okHandler: nil)
@@ -79,6 +59,7 @@ class MemoDetailViewController: UIViewController {
               title.isNotEmpty else {
             return self.deleteMemo()
         }
+        
         if isNotChangeMemo(with: index, title: title, body: divideMemo.body) {
             return
         }
@@ -223,7 +204,7 @@ extension MemoDetailViewController: MemoListSelectDelegate {
         if let originIndex = self.index {
             updateMemo(with: originIndex)
         } else {
-            saveMemo()
+//            saveMemo()
         }
         self.index = index
     }
@@ -290,7 +271,7 @@ extension UITextView {
 }
 
 protocol MemoDetailDelegate: class {
-    func saveMemo(indexRow: Int)
+//    func saveMemo()
     func deleteMemo(indexRow: Int)
     func updateMemo(indexRow: Int)
 }

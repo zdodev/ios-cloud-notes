@@ -27,16 +27,31 @@ class MemoListTableViewController: UITableViewController {
         self.tableView.register(MemoTableViewCell.self, forCellReuseIdentifier: "memoCell")
     }
 
+    // 메모 추가 버튼 클릭
     @objc func addMemo() {
-        delegate?.memoCellSelect(nil)
-        moveToMemoDetailViewController()
+        // 빈 메모 생성
+        saveMemo()
+        // 빈 메모로 textView 변경
+        moveToMemoDetailViewController(with: MemoModel.shared.list.startIndex)
+        // 빈 메모 cell 추가
+        insertFirstCell()
     }
     
-    private func moveToMemoDetailViewController() {
+    private func moveToMemoDetailViewController(with memoIndex: Int) {
         if let memoDetailViewController = delegate as? MemoDetailViewController,
            (traitCollection.horizontalSizeClass == .compact && traitCollection.userInterfaceIdiom == .phone) {
+            memoDetailViewController.index = memoIndex
             let memoDetailNavigationController = UINavigationController(rootViewController: memoDetailViewController)
             splitViewController?.showDetailViewController(memoDetailNavigationController, sender: nil)
+        }
+    }
+    
+    // MARK: MemoModel Method
+    private func saveMemo() {
+        do {
+            try MemoModel.shared.save(title: nil, body: nil)
+        } catch {
+            showError(MemoError.saveMemo, okHandler: nil)
         }
     }
     
@@ -79,7 +94,7 @@ extension MemoListTableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         delegate?.memoCellSelect(indexPath.row)
-        self.moveToMemoDetailViewController()
+        self.moveToMemoDetailViewController(with: indexPath.row)
     }
     
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
@@ -101,7 +116,7 @@ extension MemoListTableViewController {
 }
 
 extension MemoListTableViewController: MemoDetailDelegate {
-    func saveMemo(indexRow: Int) {
+    func insertFirstCell() {
         self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
     }
     
