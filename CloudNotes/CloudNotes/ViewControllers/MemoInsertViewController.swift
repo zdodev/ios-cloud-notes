@@ -32,6 +32,12 @@ class MemoInsertViewController: UIViewController {
         newMemo.body = memoTextView.text
         newMemo.lastModified = Date.timeIntervalSinceReferenceDate
         context.saveContext()
+        if let splitViewController = parent?.parent as? MainSplitVieWController {
+            if let listViewController = splitViewController.viewControllers[0].children[0] as? MemoListTableViewController {
+                listViewController.fetchItems()
+            }
+        }
+        
         if traitCollection.horizontalSizeClass == .compact {
             navigationController?.navigationController?.popViewController(animated: true)
         } else {

@@ -8,7 +8,7 @@
 import UIKit
 
 class MemoListTableViewController: UITableViewController {
-    weak var delegate: MemoListSelectDelegate?
+    var delegate: MemoListSelectDelegate?
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
@@ -29,7 +29,7 @@ class MemoListTableViewController: UITableViewController {
         fetchItems()
     }
     
-    private func fetchItems() {
+    func fetchItems() {
         do {
             Memo.shared.list = try context.fetch(MemoModel.fetchRequest())
             tableView.reloadData()
