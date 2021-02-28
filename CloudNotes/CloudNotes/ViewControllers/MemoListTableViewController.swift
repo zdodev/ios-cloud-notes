@@ -31,15 +31,11 @@ class MemoListTableViewController: UITableViewController {
     @objc func addMemo() {
         // 빈 메모 생성
         saveMemo()
-        // 빈 메모로 textView 변경
-        moveToMemoDetailViewController(with: MemoModel.shared.list.startIndex)
-        // 빈 메모 cell 추가
-        insertFirstCell()
     }
     
     private func moveToMemoDetailViewController(with memoIndex: Int) {
         if let memoDetailViewController = delegate as? MemoDetailViewController,
-           (traitCollection.horizontalSizeClass == .compact && traitCollection.userInterfaceIdiom == .phone) {
+           traitCollection.horizontalSizeClass == .compact {
             memoDetailViewController.index = memoIndex
             let memoDetailNavigationController = UINavigationController(rootViewController: memoDetailViewController)
             splitViewController?.showDetailViewController(memoDetailNavigationController, sender: nil)
@@ -50,6 +46,10 @@ class MemoListTableViewController: UITableViewController {
     private func saveMemo() {
         do {
             try MemoModel.shared.save(title: nil, body: nil)
+            // 빈 메모로 textView 변경
+            moveToMemoDetailViewController(with: MemoModel.shared.list.startIndex)
+            // 빈 메모 cell 추가
+            insertFirstCell()
         } catch {
             showError(MemoError.saveMemo, okHandler: nil)
         }
@@ -59,7 +59,7 @@ class MemoListTableViewController: UITableViewController {
         do {
             try MemoModel.shared.fetch()
             self.tableView.reloadData()
-            if MemoModel.shared.list.count > 0 {
+            if !MemoModel.shared.list.isEmpty {
                 self.delegate?.memoCellSelect(MemoModel.shared.list.startIndex)
             }
         } catch {
@@ -116,12 +116,17 @@ extension MemoListTableViewController {
 }
 
 extension MemoListTableViewController: MemoDetailDelegate {
+    func insertNewMemo() {
+        self.saveMemo()
+    }
+    
     func insertFirstCell() {
         self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
     }
     
     func deleteMemo(indexRow: Int) {
         self.tableView.deleteRows(at: [IndexPath(row: indexRow, section: 0)], with: .automatic)
+        self.delegate?.memoCellDelete(indexRow)
     }
     
     func updateMemo(indexRow: Int) {
@@ -137,5 +142,5 @@ extension MemoListTableViewController: MemoDetailDelegate {
 
 protocol MemoListSelectDelegate: class {
     func memoCellSelect(_ index: Int?)
-    func addMemo()
+    func memoCellDelete(_ index: Int)
 }

@@ -96,6 +96,7 @@ class MemoDetailViewController: UIViewController {
         }
         do {
             try MemoModel.shared.delete(index: index)
+            self.memoDetailTextView.text = nil
             self.delegate?.deleteMemo(indexRow: index)
         } catch {
             self.showError(error, okHandler: nil)
@@ -203,14 +204,25 @@ extension MemoDetailViewController: MemoListSelectDelegate {
     func memoCellSelect(_ index: Int?) {
         if let originIndex = self.index {
             updateMemo(with: originIndex)
-        } else {
-//            saveMemo()
         }
         self.index = index
     }
     
-    func addMemo() {
-        
+    func memoCellDelete(_ index: Int) {
+        guard let originIndex = self.index,
+              originIndex == index else {
+            return
+        }
+        /*
+         * 현재 textView에 표시된 메모를 삭제한 경우에는
+         * 메모 리스트의 첫 메모를 띄어주거나
+         * 리스트가 비어 있다면 새로운 메모를 추가해줘야 함
+         */
+        if MemoModel.shared.list.isEmpty {
+            self.delegate?.insertNewMemo()
+        } else {
+            self.index = MemoModel.shared.list.startIndex
+        }
     }
 }
 
@@ -271,7 +283,7 @@ extension UITextView {
 }
 
 protocol MemoDetailDelegate: class {
-//    func saveMemo()
+    func insertNewMemo()
     func deleteMemo(indexRow: Int)
     func updateMemo(indexRow: Int)
 }
