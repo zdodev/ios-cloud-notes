@@ -18,7 +18,7 @@ class MemoDetailViewController: UIViewController {
     }()
     
     // MARK: - data property
-    private var index: Int? {
+    var index: Int? {
         didSet {
             displayMemo()
         }
@@ -42,34 +42,13 @@ class MemoDetailViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+
         if let index = index {
             updateMemo(with: index)
-        } else {
-            saveMemo()
         }
     }
     
     // MARK: - Memo Data CRUD
-    private func saveMemo() {
-        if memoDetailTextView.text.isEmpty {
-            return
-        }
-        guard let memoString = memoDetailTextView.text else {
-            return self.showError(MemoError.saveMemo, okHandler: nil)
-        }
-        let divideMemo = divideMemoString(with: memoString)
-        guard let title = divideMemo.title else {
-            return
-        }
-        do {
-            try MemoModel.shared.save(title: title, body: divideMemo.body)
-            self.delegate?.saveMemo(indexRow: MemoModel.shared.list.count - 1)
-        } catch {
-            self.showError(error, okHandler: nil)
-        }
-    }
-    
     private func updateMemo(with index: Int) {
         guard let memoString = memoDetailTextView.text else {
             return self.showError(MemoError.updateMemo, okHandler: nil)
@@ -79,6 +58,7 @@ class MemoDetailViewController: UIViewController {
               title.isNotEmpty else {
             return self.deleteMemo()
         }
+        
         if isNotChangeMemo(with: index, title: title, body: divideMemo.body) {
             return
         }
@@ -115,6 +95,7 @@ class MemoDetailViewController: UIViewController {
         }
         do {
             try MemoModel.shared.delete(index: index)
+            self.memoDetailTextView.text = nil
             self.delegate?.deleteMemo(indexRow: index)
         } catch {
             self.showError(error, okHandler: nil)
@@ -222,46 +203,60 @@ extension MemoDetailViewController: MemoListSelectDelegate {
     func memoCellSelect(_ index: Int?) {
         if let originIndex = self.index {
             updateMemo(with: originIndex)
-        } else {
-            saveMemo()
         }
         self.index = index
     }
     
-    func addMemo() {
-        
+    func memoCellDelete(_ index: Int) {
+        guard let originIndex = self.index,
+              originIndex == index else {
+            return
+        }
+        /*
+         * 현재 textView에 표시된 메모를 삭제한 경우에는
+         * 메모 리스트의 첫 메모를 띄어주거나
+         * 리스트가 비어 있다면 새로운 메모를 추가해줘야 함
+         */
+        if MemoModel.shared.list.isEmpty {
+            self.delegate?.insertNewMemo()
+        } else {
+            self.index = MemoModel.shared.list.startIndex
+        }
+    }
+    
+    func checkNotEmptyTextView() -> Bool {
+        return memoDetailTextView.text.isNotEmpty
+    }
+    
+    func memoUpdate() {
+        guard let originIndex = self.index else {
+            return
+        }
+        self.updateMemo(with: originIndex)
     }
 }
 
-// TODO: refactor
 extension UITextView {
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print("touches")
-        let touch = touches.first!
+        guard let touch = touches.first else {
+            return
+        }
         var location = touch.location(in: self)
-        
-        let layoutManager = self.layoutManager
         location.x -= self.textContainerInset.left
         location.y -= self.textContainerInset.top
         
-        let glyphIndex: Int = self.layoutManager.glyphIndex(for: location, in: self.textContainer, fractionOfDistanceThroughGlyph: nil)
-        let glyphRect = layoutManager.boundingRect(forGlyphRange: NSRange(location: glyphIndex, length: 1), in: self.textContainer)
-        
+        let glyphIndex = self.layoutManager.glyphIndex(for: location, in: self.textContainer, fractionOfDistanceThroughGlyph: nil)
+        let glyphRect = self.layoutManager.boundingRect(forGlyphRange: NSRange(location: glyphIndex, length: 1), in: self.textContainer)
+
         if glyphRect.contains(location) {
-            let characterIndex: Int = layoutManager.characterIndexForGlyph(at: glyphIndex)
+            let characterIndex: Int = self.layoutManager.characterIndexForGlyph(at: glyphIndex)
             let attributeName = NSAttributedString.Key.link
             let attributeValue = self.textStorage.attribute(attributeName, at: characterIndex, effectiveRange: nil)
-            if let url = attributeValue as? URL {
-                if UIApplication.shared.canOpenURL(url) {
-                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                } else {
-                    print("There is a problem in your link.")
-                }
+            if let url = attributeValue as? URL,
+               UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
             } else {
-                // place the cursor to tap position
                 placeCursor(self, location)
-                        
-                // back to normal state
                 self.changeTextViewToNormalState()
             }
         } else {
@@ -269,20 +264,16 @@ extension UITextView {
         }
     }
     
-    fileprivate func placeCursor(_ myTextView: UITextView, _ location: CGPoint) {
-        // place the cursor on tap position
-        if let tapPosition = myTextView.closestPosition(to: location) {
-            let uiTextRange = myTextView.textRange(from: tapPosition, to: tapPosition)
-                
-            if let start = uiTextRange?.start, let end = uiTextRange?.end {
-                let loc = myTextView.offset(from: myTextView.beginningOfDocument, to: tapPosition)
-                let length = myTextView.offset(from: start, to: end)
-                myTextView.selectedRange = NSMakeRange(loc, length)
-            }
+    private func placeCursor(_ textView: UITextView, _ location: CGPoint) {
+        if let tapPosition = textView.closestPosition(to: location),
+           let textRange = textView.textRange(from: tapPosition, to: tapPosition) {
+            let textViewOffset = textView.offset(from: textView.beginningOfDocument, to: tapPosition)
+            let length = textView.offset(from: textRange.start, to: textRange.end)
+            textView.selectedRange = NSMakeRange(textViewOffset, length)
         }
     }
     
-    fileprivate func changeTextViewToNormalState() {
+    private func changeTextViewToNormalState() {
         self.isEditable = true
         self.dataDetectorTypes = []
         self.becomeFirstResponder()
@@ -290,7 +281,7 @@ extension UITextView {
 }
 
 protocol MemoDetailDelegate: class {
-    func saveMemo(indexRow: Int)
+    func insertNewMemo()
     func deleteMemo(indexRow: Int)
     func updateMemo(indexRow: Int)
 }

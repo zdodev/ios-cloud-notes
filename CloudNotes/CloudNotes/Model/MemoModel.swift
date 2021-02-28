@@ -14,7 +14,7 @@ class MemoModel {
     
     var list: [Memo] = []
     
-    func save(title: String, body: String?) throws {
+    func save(title: String?, body: String?) throws {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             throw MemoError.saveMemo
         }

@@ -28,15 +28,40 @@ class MemoListTableViewController: UITableViewController {
     }
 
     @objc func addMemo() {
-        delegate?.memoCellSelect(nil)
-        moveToMemoDetailViewController()
+        /*
+         * 가로 모드에서 메모 추가 버튼 클릭시
+         * textView가 비어 있는지 확인 필요
+         * 비어 있지 않다면 기존의 메모를 update한 후 빈 메모 추가
+         * 비어 있따면 빈 메모 추가
+         */
+        guard let delegate = self.delegate else {
+            return
+        }
+        if delegate.checkNotEmptyTextView() {
+            delegate.memoUpdate()
+        }
+        saveMemo()
     }
     
-    private func moveToMemoDetailViewController() {
+    private func moveToMemoDetailViewController(with memoIndex: Int) {
         if let memoDetailViewController = delegate as? MemoDetailViewController,
-           (traitCollection.horizontalSizeClass == .compact && traitCollection.userInterfaceIdiom == .phone) {
+           traitCollection.horizontalSizeClass == .compact {
+            memoDetailViewController.index = memoIndex
             let memoDetailNavigationController = UINavigationController(rootViewController: memoDetailViewController)
             splitViewController?.showDetailViewController(memoDetailNavigationController, sender: nil)
+        }
+    }
+    
+    // MARK: MemoModel Method
+    private func saveMemo() {
+        do {
+            try MemoModel.shared.save(title: nil, body: nil)
+            // 빈 메모로 textView 변경
+            moveToMemoDetailViewController(with: MemoModel.shared.list.startIndex)
+            // 빈 메모 cell 추가
+            insertFirstCell()
+        } catch {
+            showError(MemoError.saveMemo, okHandler: nil)
         }
     }
     
@@ -44,7 +69,7 @@ class MemoListTableViewController: UITableViewController {
         do {
             try MemoModel.shared.fetch()
             self.tableView.reloadData()
-            if MemoModel.shared.list.count > 0 {
+            if !MemoModel.shared.list.isEmpty {
                 self.delegate?.memoCellSelect(MemoModel.shared.list.startIndex)
             }
         } catch {
@@ -79,7 +104,7 @@ extension MemoListTableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         delegate?.memoCellSelect(indexPath.row)
-        self.moveToMemoDetailViewController()
+        self.moveToMemoDetailViewController(with: indexPath.row)
     }
     
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
@@ -101,12 +126,17 @@ extension MemoListTableViewController {
 }
 
 extension MemoListTableViewController: MemoDetailDelegate {
-    func saveMemo(indexRow: Int) {
+    func insertNewMemo() {
+        self.saveMemo()
+    }
+    
+    func insertFirstCell() {
         self.tableView.insertRows(at: [IndexPath(row: 0, section: 0)], with: .automatic)
     }
     
     func deleteMemo(indexRow: Int) {
         self.tableView.deleteRows(at: [IndexPath(row: indexRow, section: 0)], with: .automatic)
+        self.delegate?.memoCellDelete(indexRow)
     }
     
     func updateMemo(indexRow: Int) {
@@ -122,5 +152,7 @@ extension MemoListTableViewController: MemoDetailDelegate {
 
 protocol MemoListSelectDelegate: class {
     func memoCellSelect(_ index: Int?)
-    func addMemo()
+    func memoCellDelete(_ index: Int)
+    func checkNotEmptyTextView() -> Bool
+    func memoUpdate()
 }
