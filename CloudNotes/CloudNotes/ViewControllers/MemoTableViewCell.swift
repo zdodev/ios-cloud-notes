@@ -83,8 +83,25 @@ class MemoTableViewCell: UITableViewCell {
     
     // MARK: - display cell method
     func setupMemoCell(with item: Memo) {
-        titleLabel.text = item.title
-        dateLabel.text = item.dateToString()
-        bodyLabel.text = item.body
+        if let titleText = item.title,
+           titleText.isNotBlank {
+            titleLabel.text = titleText
+        } else {
+            titleLabel.text = "새로운 메모"
+        }
+        if let bodyText = item.body,
+           bodyText.isNotBlank {
+            bodyLabel.text = bodyText
+        } else {
+            bodyLabel.text = "추가 텍스트 없음"
+        }
+           
+//        titleLabel.text = item.title ?? "새로운 메모"
+//        bodyLabel.text = item.body ?? "추가 텍스트 없음"
+        if let date = item.lastModified {
+            dateLabel.text = date.dateToString()
+        } else {
+            dateLabel.text = Date().dateToString()
+        }
     }
 }
