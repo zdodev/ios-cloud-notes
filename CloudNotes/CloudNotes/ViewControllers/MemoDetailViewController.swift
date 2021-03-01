@@ -79,7 +79,7 @@ class MemoDetailViewController: UIViewController {
                     self.navigationController?.navigationController?.popViewController(animated: true)
                     if let splitViewController = self.parent?.parent as? MainSplitVieWController {
                         if let listViewController = splitViewController.viewControllers[0].children[0] as? MemoListTableViewController {
-                            listViewController.fetchItems()
+//                            listViewController.fetchItems()
                         }
                     }
                 }

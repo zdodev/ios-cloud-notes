@@ -8,35 +8,23 @@
 import UIKit
 
 class MemoListTableViewController: UITableViewController {
-    var delegate: MemoListSelectDelegate?
-    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    weak var delegate: MemoListSelectDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupNavigationBar()
         setupTableView()
+    }
+    
+//    func fetchItems() {
 //        do {
-//            try Memo.shared.decodeMemoData()
-//            self.delegate?.memoCellSelect(Memo.shared.list[0])
-//        } catch {
-            // TODO: add Handling error
+//            Memo.shared.list = try context.fetch(MemoModel.fetchRequest())
+//            tableView.reloadData()
+//        } catch let error as NSError {
+//            print("Error: \(error), \(error.userInfo)")
 //        }
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        fetchItems()
-    }
-    
-    func fetchItems() {
-        do {
-            Memo.shared.list = try context.fetch(MemoModel.fetchRequest())
-            tableView.reloadData()
-        } catch let error as NSError {
-            print("Error: \(error), \(error.userInfo)")
-        }
-    }
+//    }
     
     private func setupNavigationBar() {
         navigationItem.title = "메모"
@@ -51,10 +39,8 @@ class MemoListTableViewController: UITableViewController {
     
     // TODO: add method logic
     @objc func addMemo() {
-//        let memoInsertView = MemoInsertViewController()
-//        navigationController?.pushViewController(memoInsertView, animated: true)
-        let memoInsertViewController = MemoInsertViewController()
-        splitViewController?.showDetailViewController(UINavigationController(rootViewController: memoInsertViewController), sender: nil)
+        let memoDetailViewController = MemoDetailViewController()
+        splitViewController?.showDetailViewController(UINavigationController(rootViewController: memoDetailViewController), sender: nil)
     }
 }
 
@@ -84,7 +70,6 @@ extension MemoListTableViewController {
         if let memoDetailViewController = delegate as? MemoDetailViewController {
             Memo.shared.list[indexPath.row].setupIndex(Int64(indexPath.row))
             splitViewController?.showDetailViewController(UINavigationController(rootViewController: memoDetailViewController), sender: nil)
-//            splitViewController?.showDetailViewController(memoDetailViewController, sender: nil)
         }
     }
 }

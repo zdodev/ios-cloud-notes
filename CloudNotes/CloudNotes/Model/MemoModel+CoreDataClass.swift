@@ -8,8 +8,9 @@
 
 import Foundation
 import CoreData
+import UIKit
 
 @objc(MemoModel)
 public class MemoModel: NSManagedObject {
-
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 }

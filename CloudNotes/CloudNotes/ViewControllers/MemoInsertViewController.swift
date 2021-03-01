@@ -34,7 +34,7 @@ class MemoInsertViewController: UIViewController {
         context.saveContext()
         if let splitViewController = parent?.parent as? MainSplitVieWController {
             if let listViewController = splitViewController.viewControllers[0].children[0] as? MemoListTableViewController {
-                listViewController.fetchItems()
+//                listViewController.fetchItems()
             }
         }
         
