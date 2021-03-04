@@ -211,14 +211,8 @@ extension MemoDetailViewController: MemoListSelectDelegate {
               originIndex == index else {
             return
         }
-        /*
-         * 현재 textView에 표시된 메모를 삭제한 경우에는
-         * 메모 리스트의 첫 메모를 띄어주거나
-         * 리스트가 비어 있다면 새로운 메모를 추가해줘야 함
-         */
-        if MemoModel.shared.list.isEmpty {
-            self.delegate?.insertNewMemo()
-        } else {
+
+        if !MemoModel.shared.list.isEmpty {
             self.index = MemoModel.shared.list.startIndex
         }
     }
