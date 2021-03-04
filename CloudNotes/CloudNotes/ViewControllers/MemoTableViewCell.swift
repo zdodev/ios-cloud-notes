@@ -96,12 +96,6 @@ class MemoTableViewCell: UITableViewCell {
             bodyLabel.text = "추가 텍스트 없음"
         }
            
-//        titleLabel.text = item.title ?? "새로운 메모"
-//        bodyLabel.text = item.body ?? "추가 텍스트 없음"
-        if let date = item.lastModified {
-            dateLabel.text = date.dateToString()
-        } else {
-            dateLabel.text = Date().dateToString()
-        }
+        dateLabel.text = item.dateToString()
     }
 }

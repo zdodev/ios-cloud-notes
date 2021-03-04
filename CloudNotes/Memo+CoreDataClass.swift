@@ -11,5 +11,13 @@ import CoreData
 
 @objc(Memo)
 public class Memo: NSManagedObject {
-    
+    func dateToString() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy.MM.dd"
+        if let date = self.lastModified {
+            return dateFormatter.string(from: date)
+        } else {
+            return dateFormatter.string(from: Date())
+        }
+    }
 }
