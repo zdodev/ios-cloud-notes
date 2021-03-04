@@ -54,8 +54,7 @@ class MemoDetailViewController: UIViewController {
             return self.showError(MemoError.updateMemo, okHandler: nil)
         }
         let divideMemo = divideMemoString(with: memoString)
-        guard let title = divideMemo.title,
-              title.isNotEmpty else {
+        guard let title = divideMemo.title, title.isNotEmpty else {
             return self.deleteMemo()
         }
         
